@@ -138,15 +138,6 @@
       color: var(--tiger-black);
     }
 
-    .note {
-      margin-top: 2rem;
-      background: var(--gold-tint);
-      border-left: 6px solid var(--mizzou-gold);
-      border-radius: 14px;
-      padding: 1rem 1.2rem;
-      line-height: 1.6;
-    }
-
     footer {
       padding: 1.25rem 1.5rem 2.5rem;
       color: var(--black-tint);
@@ -177,52 +168,50 @@
   </style>
 </head>
 <body>
-  <div class="topbar" aria-hidden="true"></div>
+  <div class="topbar"></div>
 
   <header class="hero">
     <div class="container">
       <div class="brand-lockup">
-        <span class="brand-mark" aria-hidden="true"></span>
-        <span>University of Missouri-inspired BtG landing page</span>
+        <span class="brand-mark"></span>
+        <span>University of Missouri-inspired BtG platform</span>
       </div>
-      <span class="eyebrow">BtG Navigation Hub</span>
-      <h1>Bridge the Gap Portal</h1>
+      <span class="eyebrow">BtG Learning Suite</span>
+      <h1>Bridge the Gap</h1>
       <p class="subtext">
-        This is a simple shell webpage for GitHub deployment. Use the cards below as entry points to each BtG module, then replace the placeholder links with the final page URLs when they are ready.
+        Interactive learning tools designed to simulate clinical thinking, reinforce knowledge, and prepare students for real-world medical decision-making.
       </p>
     </div>
   </header>
 
   <main>
     <div class="container">
-      <section class="card-grid" aria-label="BtG Pages">
+      <section class="card-grid">
+
         <article class="nav-card">
           <h2>BtG EHR</h2>
-          <p>Live entry point for the BtG electronic health record experience.</p>
-          <a href="https://caps-nu.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="Open BtG EHR">Open Page</a>
+          <p>Interactive patient case simulation with chart navigation, diagnostics, and clinical decision-making.</p>
+          <a href="https://caps-nu.vercel.app" target="_blank" rel="noopener noreferrer">Launch Simulation</a>
         </article>
 
         <article class="nav-card">
-          <h2>BtG Quizbowl</h2>
-          <p>Placeholder entry point for the BtG Quizbowl activity or competition page.</p>
-          <a href="#" aria-label="Open BtG Quizbowl">Open Page</a>
+          <h2>BtG Quiz Bowl</h2>
+          <p>Fast-paced question-based challenge to reinforce clinical knowledge and test recall under pressure.</p>
+          <a href="https://chatgpt.com/canvas/shared/69d6b05b2de08191a5087d4540299065" target="_blank">Start Quiz</a>
         </article>
 
         <article class="nav-card">
-          <h2>BtG Lungs</h2>
-          <p>Placeholder entry point for the BtG Lungs module and related content.</p>
-          <a href="#" aria-label="Open BtG Lungs">Open Page</a>
+          <h2>Lung Sounds Matching</h2>
+          <p>Audio-based matching activity to build recognition of common and critical lung sounds.</p>
+          <a href="https://chatgpt.com/canvas/shared/69de8f6c8e1481919c949701ae2bb14a" target="_blank">Start Activity</a>
         </article>
+
       </section>
-
-      <div class="note">
-        <strong>Portal status:</strong> the BtG EHR card now points to the public production EHR. BtG Quizbowl and BtG Lungs still use placeholder links and can be updated the same way once those modules are deployed.
-      </div>
     </div>
   </main>
 
   <footer>
-    Styled with Mizzou-inspired black and gold for a clean University of Missouri feel.
+    BtG Learning Suite • Built for experiential medical education
   </footer>
 </body>
 </html>
