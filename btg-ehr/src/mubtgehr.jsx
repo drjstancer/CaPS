@@ -287,7 +287,64 @@ export default function App() {
               {caseId === "case2" && station === 0 && tab === "Decision" && <div className="space-y-4"><ImgCard src={IMG.cxr2} label="Chest X-ray (Progression)" file="case2_chest_xray2.jpg" /><Card><div className="mb-2 text-lg font-bold text-neutral-900">Image Interpretation</div><div className="mb-3 text-sm text-neutral-600">What changed between the first and second chest X-rays?</div><div className="grid gap-2 md:grid-cols-2">{["Worsening right lower lobe consolidation", "No meaningful change from the first image", "Improving pneumonia", "Normal chest X-ray"].map((o) => <Chip key={o} on={c2DecisionChoice === o} onClick={() => setC2DecisionChoice(o)}>{o}</Chip>)}</div><div className={`mt-3 rounded-lg px-3 py-2 text-sm ${!c2DecisionChoice ? "bg-neutral-100 text-neutral-600" : c2DecisionChoice === "Worsening right lower lobe consolidation" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>{!c2DecisionChoice ? "Select the best interpretation of the interval change." : c2DecisionChoice === "Worsening right lower lobe consolidation" ? "Correct. The second image suggests worsening right lower lobe consolidation, which supports pneumonia progression." : "Not the best choice. Look for interval worsening in the right lower lung field."}</div></Card><Bullets title="Likely Diagnosis" items={["This station points to pneumonia.", "Students should discuss home versus hospital if symptoms worsen."]} /></div>}
 
               {caseId === "case2" && station === 1 && tab === "Triage" && <Card><div className="mb-2 text-lg font-bold">Emergency Priorities</div><div className="grid gap-2 md:grid-cols-2">{["Check ABCs first", "Assess oxygen needs", "Control pain and get imaging", "Send home immediately"].map((o) => <Chip key={o} on={triage.includes(o)} onClick={() => toggleMulti(triage, o, setTriage)}>{o}</Chip>)}</div><div className={`mt-3 rounded-lg px-3 py-2 text-sm ${triageCorrect ? "bg-green-100 text-green-800" : "bg-neutral-100 text-neutral-600"}`}>{triageCorrect ? "Correct triage priorities selected." : "Select the appropriate emergency priorities."}</div></Card>}
-              {caseId === "case2" && station === 1 && tab === "Vitals" && <div className="space-y-4"><ImgCard src={IMG.hip} label="Hip X-ray" file="case2_hip_xray.jpg" height="h-96" /><Bullets title="ED Findings" items={["Oxygen level is lower than expected", "Severe hip pain after the fall", "Imaging suggests displaced femoral neck fracture", "Pneumonia is worsening"]} /></div>}
+              {caseId === "case2" && station === 1 && tab === "Vitals" && (
+  <div className="space-y-4">
+    <div className="grid gap-4 md:grid-cols-2">
+      <ImgCard
+        src={IMG.hip}
+        label="Hip X-ray"
+        file="case2_hip_xray.jpg"
+        height="h-96"
+      />
+      <ImgCard
+        src={IMG.cxr2}
+        label="Chest X-ray (Progression)"
+        file="case2_chest_xray2.jpg"
+        height="h-96"
+      />
+    </div>
+
+    <Bullets
+      title="ED Findings"
+      items={[
+        "Oxygen level is lower than expected",
+        "Severe hip pain after the fall",
+        "Imaging suggests displaced femoral neck fracture",
+        "Pneumonia is worsening",
+      ]}
+    />
+
+    <Card>
+      <div className="mb-2 text-lg font-bold">What do you treat first?</div>
+      <div className="grid gap-2 md:grid-cols-2">
+        {["Fracture", "Pneumonia"].map((o) => (
+          <Chip
+            key={o}
+            on={c2DecisionChoice === o}
+            onClick={() => setC2DecisionChoice(o)}
+          >
+            {o}
+          </Chip>
+        ))}
+      </div>
+      <div
+        className={`mt-3 rounded-lg px-3 py-2 text-sm ${
+          !c2DecisionChoice
+            ? "bg-neutral-100 text-neutral-600"
+            : c2DecisionChoice === "Pneumonia"
+            ? "bg-green-100 text-green-800"
+            : "bg-red-100 text-red-800"
+        }`}
+      >
+        {!c2DecisionChoice
+          ? "Select the problem that must be addressed first."
+          : c2DecisionChoice === "Pneumonia"
+          ? "Correct. The pneumonia and oxygenation issue must be stabilized before surgery."
+          : "Not quite. The fracture matters, but the pneumonia must be treated first."}
+      </div>
+    </Card>
+  </div>
+)}
               {caseId === "case2" && station === 1 && tab === "Decision Reveal" && <Bullets title="Teaching Reveal" items={["Emergency physicians stabilize first, then coordinate admission and consultation.", "The fracture matters, but oxygen needs and pneumonia cannot be ignored."]} />}
 
               {caseId === "case2" && station === 2 && tab === "Scenario Board" && <div className="space-y-4"><Card className="border-yellow-300 bg-yellow-50"><div className="font-semibold">Work through each scenario in order. Choose the plan, click Check Plan, and advance only after a correct answer.</div></Card><Card><div className="mb-3 flex items-center justify-between gap-3"><div><div className="text-lg font-bold text-neutral-900">{curH.label}</div><div className="text-sm text-neutral-600">{curH.note}</div></div><div className="text-sm text-neutral-600">Scenario {progressNote}</div></div><div className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-6"><Metric label="O2" value={curH.vitals.o2} /><Metric label="BP" value={curH.vitals.bp} /><Metric label="HR" value={curH.vitals.hr} /><Metric label="Respiratory Rate" value={curH.vitals.rr} /><Metric label="Temperature" value={curH.vitals.temp} /><Metric label="Pain Level" value={curH.vitals.pain} /></div><div className="mb-3 text-sm text-neutral-600">Goal: {curH.goal}</div><div className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]"><div><div className="mb-2 font-semibold text-neutral-900">Patient Details</div><ul className="space-y-2 text-sm text-neutral-800">{curH.details.map((i) => <li key={i}>• {i}</li>)}</ul></div><div className="space-y-4"><div><div className="mb-2 font-semibold text-neutral-900">Oxygen</div><div className="grid gap-2 md:grid-cols-2">{hospOxygen.map((o) => <Chip key={o} on={hPlan.oxygen.includes(o)} onClick={() => setSingle(hPlan, "oxygen", o, setHPlan)}>{o}</Chip>)}</div></div><div><div className="mb-2 font-semibold text-neutral-900">Fluids</div><div className="grid gap-2 md:grid-cols-2">{["Give IV fluids", "Hold IV fluids"].map((o) => <Chip key={o} on={hPlan.fluids.includes(o)} onClick={() => setSingle(hPlan, "fluids", o, setHPlan)}>{o}</Chip>)}</div></div><div><div className="mb-2 font-semibold text-neutral-900">Antibiotics</div><div className="grid gap-2 md:grid-cols-2">{hospAbx.map((o) => <Chip key={o} on={hPlan.abx.includes(o)} onClick={() => setSingle(hPlan, "abx", o, setHPlan)}>{o}</Chip>)}</div></div><div><div className="mb-2 font-semibold text-neutral-900">Pain Management</div><div className="grid gap-2 md:grid-cols-3">{["No medication", "Acetaminophen", "Oxycodone"].map((o) => <Chip key={o} on={hPlan.pain.includes(o)} onClick={() => setSingle(hPlan, "pain", o, setHPlan)}>{o}</Chip>)}</div></div>{hIdx === 3 && <div><div className="mb-2 font-semibold text-neutral-900">Final Disposition</div><div className="grid gap-2 md:grid-cols-2">{["Ready for surgery"].map((o) => <Chip key={o} on={hPlan.dispo.includes(o)} onClick={() => setSingle(hPlan, "dispo", o, setHPlan)}>{o}</Chip>)}</div></div>}</div></div><div className="mt-4 flex flex-wrap items-center gap-3"><button onClick={() => setHChecked(true)} className="rounded-lg bg-yellow-500 px-4 py-2 font-semibold text-black">Check Plan</button><button onClick={() => { if (hIdx < HOSP.length - 1) { setHIdx(hIdx + 1); setHPlan({ oxygen: [], fluids: [], abx: [], pain: [], dispo: [] }); setHChecked(false); } }} disabled={hIdx === HOSP.length - 1} className="rounded-lg bg-black px-4 py-2 font-semibold text-white disabled:opacity-40">Next Scenario</button>{hChecked && <div className={`rounded-lg px-3 py-2 text-sm font-semibold ${hCorrect ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>{hCorrect ? "Correct plan." : "Try again."}</div>}</div></Card>{hChecked && <Card><div className="mb-2 text-lg font-bold text-neutral-900">Physician Note</div><div className="text-sm text-neutral-700">{curH.rat}</div></Card>}</div>}
