@@ -223,7 +223,53 @@ export default function App() {
               {caseId === "case1" && station === 0 && tab === "Results" && <div className="space-y-4"><div className="grid gap-4 md:grid-cols-2"><ImgCard src={IMG.mammoCC} label="CC View" file="case1_mammogram_cc.png" /><ImgCard src={IMG.mammoMLO} label="MLO View" file="case1_mammogram_mlo.png" /></div><Bullets title="Imaging Preview" items={["Suspicious left breast mass with irregular/spiculated appearance", "Ultrasound confirms solid irregular mass", "Imaging is previewed here; pathology is the next station."]} /></div>}
 
               {caseId === "case1" && station === 1 && tab === "Slide Viewer" && <div className="space-y-4"><div className="grid gap-4 md:grid-cols-2"><div><ImgCard src={IMG.pathNormal} label="Normal Tissue" file="case1_pathology_normal.png" /><button onClick={() => setPathPick("normal")} className={`mt-2 w-full rounded-lg border px-3 py-2 ${pathPick === "normal" ? "border-yellow-500 bg-yellow-50" : "border-neutral-300 bg-white"}`}>Inspect normal tissue</button></div><div><ImgCard src={IMG.pathPatient} label="Patient Sample" file="case1_pathology_patient.png" /><button onClick={() => setPathPick("patient")} className={`mt-2 w-full rounded-lg border px-3 py-2 ${pathPick === "patient" ? "border-yellow-500 bg-yellow-50" : "border-neutral-300 bg-white"}`}>Inspect patient sample</button></div></div><div className={`rounded-lg px-3 py-2 text-sm ${!pathPick ? "bg-neutral-100 text-neutral-600" : pathPick === "patient" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"}`}>{!pathPick ? "Choose a slide to inspect." : pathPick === "patient" ? "Crowded pleomorphic nuclei and invasive architecture are concerning." : "Normal ducts are more organized and uniform."}</div></div>}
-              {caseId === "case1" && station === 1 && tab === "Report Builder" && <div className="space-y-4"><Card><div className="mb-2 text-lg font-bold">Cell Pattern</div><div className="grid gap-2 md:grid-cols-2">{["Normal / orderly", "Abnormal / disorganized"].map((o) => <Chip key={o} on={pathReport.pattern === o} onClick={() => setPathReport({ ...pathReport, pattern: o })}>{o}</Chip>)}</div></Card><Card><div className="mb-2 text-lg font-bold">Likely Diagnosis</div><div className="grid gap-2 md:grid-cols-2">{["Normal breast tissue", "Benign change only", "Breast cancer is present"].map((o) => <Chip key={o} on={pathReport.dx === o} onClick={() => setPathReport({ ...pathReport, dx: o })}>{o}</Chip>)}</div></Card></div>}
+              {caseId === "case1" && station === 1 && tab === "Report Builder" && (
+  <div className="space-y-4">
+    <Card>
+      <div className="mb-2 text-lg font-bold">Cell Pattern</div>
+      <div className="grid gap-2 md:grid-cols-2">
+        {["Normal / orderly", "Abnormal / disorganized"].map((o) => (
+          <Chip
+            key={o}
+            on={pathReport.pattern === o}
+            onClick={() => setPathReport({ ...pathReport, pattern: o })}
+          >
+            {o}
+          </Chip>
+        ))}
+      </div>
+    </Card>
+
+    <Card>
+      <div className="mb-2 text-lg font-bold">Likely Diagnosis</div>
+      <div className="grid gap-2 md:grid-cols-2">
+        {["Normal breast tissue", "Benign change only", "Breast cancer is present"].map((o) => (
+          <Chip
+            key={o}
+            on={pathReport.dx === o}
+            onClick={() => setPathReport({ ...pathReport, dx: o })}
+          >
+            {o}
+          </Chip>
+        ))}
+      </div>
+    </Card>
+
+    <div
+      className={`rounded-lg px-3 py-2 text-sm ${
+        pathReport.pattern === "Abnormal / disorganized" &&
+        pathReport.dx === "Breast cancer is present"
+          ? "bg-green-100 text-green-800"
+          : "bg-neutral-100 text-neutral-600"
+      }`}
+    >
+      {pathReport.pattern === "Abnormal / disorganized" &&
+      pathReport.dx === "Breast cancer is present"
+        ? "Correct pathology report selections."
+        : "Select the most appropriate cell pattern and diagnosis."}
+    </div>
+  </div>
+)}
               {caseId === "case1" && station === 1 && tab === "Diagnosis Reveal" && <Bullets title="Diagnosis" items={["Biopsy confirms invasive ductal carcinoma.", "Pathology confirmation allows treatment planning to begin."]} />}
 
               {caseId === "case1" && station === 2 && tab === "Case Data" && <div className="space-y-4"><Bullets title="Clinical Data" items={["Cancer confirmed on biopsy", "Localized disease", "Patient is worried about side effects and body image"]} /><Bullets title="Teaching Point" items={["The patient must understand and agree to the plan."]} /></div>}
