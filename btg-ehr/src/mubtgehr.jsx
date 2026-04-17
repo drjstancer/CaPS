@@ -19,9 +19,9 @@ const CASES = {
     patient: { name: "Angela Brooks, 45", mrn: "10233987", complaint: "Lump in breast", vitals: ["Temp 98.8°F", "HR 84", "BP 126/78", "RR 16"] },
     stations: [
       { title: "PCP: Find the Red Flags", role: "First point of contact", icon: Stethoscope, tabs: ["Summary", "History", "Orders", "Results"] },
-      { title: "Pathology: You Are the Diagnostician", role: "Makes the diagnosis", icon: Microscope, tabs: ["Slide Viewer", "Report Builder", "Diagnosis Reveal"] },
+      { title: "Pathology: You Are the Diagnostician", role: "Makes the diagnosis", icon: Microscope, tabs: ["Report Builder", "Diagnosis Reveal"] },
       { title: "Oncology: Build the Treatment Plan", role: "Plans treatment", icon: Activity, tabs: ["Case Data", "Treatment Scenarios", "Outcomes"] },
-      { title: "Surgery: Plan the Operation", role: "Removes the tumor", icon: Syringe, tabs: ["Tumor Map", "Surgery Plan", "Wrap-Up"] },
+      { title: "Surgery: Plan the Operation", role: "Removes the tumor", icon: Syringe, tabs: ["Surgery Plan", "Wrap-Up"] },
     ],
   },
   case2: {
@@ -229,8 +229,56 @@ export default function App() {
               {caseId === "case1" && station === 2 && tab === "Case Data" && <div className="space-y-4"><Bullets title="Clinical Data" items={["Cancer confirmed on biopsy", "Localized disease", "Patient is worried about side effects and body image"]} /><Bullets title="Teaching Point" items={["The patient must understand and agree to the plan."]} /></div>}
               {caseId === "case1" && station === 2 && tab === "Treatment Scenarios" && <div className="space-y-4"><Card className="border-yellow-300 bg-yellow-50"><div className="font-semibold">Work through each cancer subtype scenario. Select categories, click Check Plan, and advance only after a correct answer.</div></Card><Card><div className="mb-3 flex items-center justify-between gap-3"><div><div className="text-lg font-bold text-neutral-900">{curOnc.label}</div><div className="text-sm text-neutral-600">Type of Cancer: {curOnc.sub}</div><div className="text-sm text-neutral-600">Patient Age: {curOnc.age}</div><div className="text-sm text-neutral-600">Patient Preference: {curOnc.pref}</div></div><div className="text-sm text-neutral-600">Scenario {oncIdx + 1} of {ONC.length}</div></div><div className="mb-3 text-sm text-neutral-600">Goal: {curOnc.goal}</div><div className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]"><div><div className="mb-2 font-semibold text-neutral-900">Case Features</div><ul className="space-y-2 text-sm text-neutral-800">{curOnc.details.map((i) => <li key={i}>• {i}</li>)}</ul></div><div className="space-y-4"><div><div className="mb-2 font-semibold text-neutral-900">Stage</div><div className="grid gap-2 md:grid-cols-2">{ONC_OPT.stage.map((o) => <Chip key={o} on={onc.stage.includes(o)} onClick={() => setSingle(onc, "stage", o, setOnc)}>{o}</Chip>)}</div></div><div><div className="mb-2 font-semibold text-neutral-900">Surgery</div><div className="grid gap-2 md:grid-cols-2">{ONC_OPT.surgery.map((o) => <Chip key={o} on={onc.surgery.includes(o)} onClick={() => setSingle(onc, "surgery", o, setOnc)}>{o}</Chip>)}</div></div><div><div className="mb-2 font-semibold text-neutral-900">Systemic</div><div className="grid gap-2 md:grid-cols-2">{ONC_OPT.systemic.map((o) => <Chip key={o} on={onc.systemic.includes(o)} onClick={() => toggleMulti(onc.systemic, o, (next) => setOnc({ ...onc, systemic: next }))}>{o}</Chip>)}</div></div><div><div className="mb-2 font-semibold text-neutral-900">Radiation Therapy</div><div className="grid gap-2 md:grid-cols-2">{ONC_OPT.radiation.map((o) => <Chip key={o} on={onc.radiation.includes(o)} onClick={() => setSingle(onc, "radiation", o, setOnc)}>{o}</Chip>)}</div></div></div></div><div className="mt-4 flex flex-wrap items-center gap-3"><button onClick={() => setOncChecked(true)} className="rounded-lg bg-yellow-500 px-4 py-2 font-semibold text-black">Check Plan</button><button onClick={() => { if (oncIdx < ONC.length - 1) { setOncIdx(oncIdx + 1); setOnc({ stage: [], surgery: [], systemic: [], radiation: [] }); setOncChecked(false); } }} disabled={oncIdx === ONC.length - 1} className="rounded-lg bg-black px-4 py-2 font-semibold text-white disabled:opacity-40">Next Scenario</button>{oncChecked && <div className={`rounded-lg px-3 py-2 text-sm font-semibold ${oncCorrect ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>{oncCorrect ? "Correct plan." : "Try again."}</div>}</div></Card>{oncChecked && <Card><div className="mb-2 text-lg font-bold text-neutral-900">Physician Note</div><div className="text-sm text-neutral-700">{curOnc.rat}</div></Card>}</div>}
               {caseId === "case1" && station === 2 && tab === "Outcomes" && <Bullets title="Treatment Reveal" items={["Choices may include surgery, hormone therapy, radiation, chemotherapy, or targeted therapy.", "The best answer should fit both tumor biology and patient preference."]} />}
-              {caseId === "case1" && station === 3 && tab === "Tumor Map" && <div className="space-y-4"><ImgCard src={IMG.tumor} label="Tumor Map" file="case1_tumor_map.png" height="h-64" /><Bullets title="Planning Data" items={["Tumor is localized to the upper outer quadrant", "Remove tumor plus a rim of healthy tissue", "Margins matter"]} /></div>}
-              {caseId === "case1" && station === 3 && tab === "Surgery Plan" && <div className="space-y-4"><Card><div className="mb-2 text-lg font-bold">Surgery Thinking</div><div className="grid gap-2 md:grid-cols-2">{["Remove tumor with margin", "Discuss risks and recovery with patient", "Ignore pathology findings", "Remove nothing"].map((o) => <Chip key={o} on={surgPick.includes(o)} onClick={() => toggleMulti(surgPick, o, setSurgPick)}>{o}</Chip>)}</div></Card><div className={`rounded-lg px-3 py-2 text-sm ${exact(surgPick, ["Remove tumor with margin", "Discuss risks and recovery with patient"]) ? "bg-green-100 text-green-800" : "bg-neutral-100 text-neutral-600"}`}>{exact(surgPick, ["Remove tumor with margin", "Discuss risks and recovery with patient"]) ? "Correct surgery plan selected." : "Select the appropriate surgery thinking choices."}</div></div>}
+              {caseId === "case1" && station === 3 && tab === "Surgery Plan" && (
+  <div className="space-y-4">
+    <Bullets
+      title="Planning Data"
+      items={[
+        "Tumor is localized to the upper outer quadrant",
+        "Remove tumor plus a rim of healthy tissue",
+        "Margins matter",
+      ]}
+    />
+
+    <Card>
+      <div className="mb-2 text-lg font-bold">Surgery Thinking</div>
+      <div className="grid gap-2 md:grid-cols-2">
+        {[
+          "Remove tumor with margin",
+          "Discuss risks and recovery with patient",
+          "Ignore pathology findings",
+          "Remove nothing",
+        ].map((o) => (
+          <Chip
+            key={o}
+            on={surgPick.includes(o)}
+            onClick={() => toggleMulti(surgPick, o, setSurgPick)}
+          >
+            {o}
+          </Chip>
+        ))}
+      </div>
+    </Card>
+
+    <div
+      className={`rounded-lg px-3 py-2 text-sm ${
+        exact(surgPick, [
+          "Remove tumor with margin",
+          "Discuss risks and recovery with patient",
+        ])
+          ? "bg-green-100 text-green-800"
+          : "bg-neutral-100 text-neutral-600"
+      }`}
+    >
+      {exact(surgPick, [
+        "Remove tumor with margin",
+        "Discuss risks and recovery with patient",
+      ])
+        ? "Correct surgery plan selected."
+        : "Select the appropriate surgery thinking choices."}
+    </div>
+  </div>
+)}
               {caseId === "case1" && station === 3 && tab === "Wrap-Up" && <Bullets title="Follow-Up" items={["Primary care and oncology continue supportive care after surgery.", "Recovery includes monitoring, lifestyle support, and emotional support."]} />}
 
               {caseId === "case2" && station === 0 && tab === "Summary" && <div className="space-y-4"><Bullets title="Chief Concerns" items={["Cough and fever", "Weakness and fatigue", "Likely infection"]} /><Bullets title="Teaching Point" items={["PCPs decide who may go home and who may need hospital-level care."]} /></div>}
