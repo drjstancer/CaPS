@@ -162,7 +162,7 @@ export default function App() {
   const [hIdx, setHIdx] = useState(0);
   const [hChecked, setHChecked] = useState(false);
   const [hPlan, setHPlan] = useState({ oxygen: [], fluids: [], abx: [], pain: [], dispo: [] });
-  const [c2DecisionChoice, setC2DecisionChoice] = useState("");
+  const [c2EdPriorityChoice, setC2EdPriorityChoice] = useState("");
   const [triage, setTriage] = useState([]);
   const [orthoPlan, setOrthoPlan] = useState([]);
 
@@ -289,6 +289,7 @@ export default function App() {
               {caseId === "case2" && station === 1 && tab === "Triage" && <Card><div className="mb-2 text-lg font-bold">Emergency Priorities</div><div className="grid gap-2 md:grid-cols-2">{["Check ABCs first", "Assess oxygen needs", "Control pain and get imaging", "Send home immediately"].map((o) => <Chip key={o} on={triage.includes(o)} onClick={() => toggleMulti(triage, o, setTriage)}>{o}</Chip>)}</div><div className={`mt-3 rounded-lg px-3 py-2 text-sm ${triageCorrect ? "bg-green-100 text-green-800" : "bg-neutral-100 text-neutral-600"}`}>{triageCorrect ? "Correct triage priorities selected." : "Select the appropriate emergency priorities."}</div></Card>}
               {caseId === "case2" && station === 1 && tab === "Vitals" && (
   <div className="space-y-4">
+    
     <div className="grid gap-4 md:grid-cols-2">
       <ImgCard
         src={IMG.hip}
@@ -315,34 +316,39 @@ export default function App() {
     />
 
     <Card>
-      <div className="mb-2 text-lg font-bold">What do you treat first?</div>
+      <div className="mb-2 text-lg font-bold">
+        What do you treat first?
+      </div>
+
       <div className="grid gap-2 md:grid-cols-2">
         {["Fracture", "Pneumonia"].map((o) => (
           <Chip
             key={o}
-            on={c2DecisionChoice === o}
-            onClick={() => setC2DecisionChoice(o)}
+            on={c2EdPriorityChoice === o}
+            onClick={() => setC2EdPriorityChoice(o)}
           >
             {o}
           </Chip>
         ))}
       </div>
+
       <div
         className={`mt-3 rounded-lg px-3 py-2 text-sm ${
-          !c2DecisionChoice
+          !c2EdPriorityChoice
             ? "bg-neutral-100 text-neutral-600"
-            : c2DecisionChoice === "Pneumonia"
+            : c2EdPriorityChoice === "Pneumonia"
             ? "bg-green-100 text-green-800"
             : "bg-red-100 text-red-800"
         }`}
       >
-        {!c2DecisionChoice
+        {!c2EdPriorityChoice
           ? "Select the problem that must be addressed first."
-          : c2DecisionChoice === "Pneumonia"
+          : c2EdPriorityChoice === "Pneumonia"
           ? "Correct. The pneumonia and oxygenation issue must be stabilized before surgery."
           : "Not quite. The fracture matters, but the pneumonia must be treated first."}
       </div>
     </Card>
+
   </div>
 )}
               {caseId === "case2" && station === 1 && tab === "Decision Reveal" && <Bullets title="Teaching Reveal" items={["Emergency physicians stabilize first, then coordinate admission and consultation.", "The fracture matters, but oxygen needs and pneumonia cannot be ignored."]} />}
