@@ -1,0 +1,10 @@
+{
+  "name": "caps-apps-landing",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "rm -rf dist && mkdir -p dist && cp index.html dist/index.html && npm --prefix btg-ehr install && npm --prefix btg-ehr run build -- --base=/btg-ehr/ && cp -R btg-ehr/dist dist/btg-ehr && npm --prefix PAWS install && npm --prefix PAWS run build -- --base=/PAWS/ && cp -R PAWS/dist dist/PAWS"
+  },
+  "devDependencies": {}
+}
