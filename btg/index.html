@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BtG Applications</title>
+  <style>
+    :root { --gold:#f4b400; --black:#111; --gray:#f5f5f5; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: radial-gradient(circle at top, #2b2b2b, #0f0f0f 60%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .wrap { width: min(960px, 100%); text-align: center; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--gold);
+      color: black;
+      font-weight: 900;
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 18px;
+    }
+    h1 { font-size: clamp(2rem, 5vw, 4rem); margin: 0 0 10px; }
+    p { color: #d6d6d6; font-size: 1.1rem; margin: 0 0 36px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; }
+    .card {
+      display: block;
+      background: white;
+      color: #111;
+      text-decoration: none;
+      border-radius: 22px;
+      padding: 28px;
+      text-align: left;
+      border: 3px solid transparent;
+      box-shadow: 0 18px 40px rgba(0,0,0,.35);
+      transition: transform .18s ease, border-color .18s ease;
+    }
+    .card:hover { transform: translateY(-4px); border-color: var(--gold); }
+    .card h2 { margin: 0 0 8px; font-size: 1.45rem; }
+    .card span { display:block; color:#555; line-height:1.4; }
+    .primary { background: #fff8dc; }
+    .back { margin-top: 28px; display:inline-block; color:#f4b400; text-decoration:none; font-weight:700; }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="badge">MU BtG</div>
+    <h1>Bridging the Gaps</h1>
+    <p>Select a BtG learning tool.</p>
+
+    <section class="grid" aria-label="BtG application options">
+      <a class="card primary" href="/btg-ehr/">
+        <h2>BtG EHR</h2>
+        <span>Interactive patient case progression for the BtG clinical stations.</span>
+      </a>
+      <a class="card" href="#" aria-disabled="true">
+        <h2>BtG Quizbowl</h2>
+        <span>Coming soon.</span>
+      </a>
+      <a class="card" href="#" aria-disabled="true">
+        <h2>BtG Lungs</h2>
+        <span>Coming soon.</span>
+      </a>
+    </section>
+
+    <a class="back" href="/">← Back to CaPS Applications</a>
+  </main>
+</body>
+</html>
