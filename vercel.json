@@ -1,0 +1,11 @@
+{
+  "routes": [
+    { "src": "^/$", "dest": "/index.html" },
+
+    { "src": "^/btg-ehr$", "dest": "/btg-ehr/index.html" },
+    { "src": "^/btg-ehr/(.*)", "dest": "/btg-ehr/index.html" },
+
+    { "src": "^/PAWS$", "dest": "/PAWS/index.html" },
+    { "src": "^/PAWS/(.*)", "dest": "/PAWS/index.html" }
+  ]
+}
