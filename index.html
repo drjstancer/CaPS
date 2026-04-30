@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CaPS Applications</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container { text-align: center; }
+    h1 { margin-bottom: 40px; font-size: 2.5rem; }
+    .buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 20px 30px;
+      font-size: 1.2rem;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+    .btg { background: #f4b400; color: black; }
+    .paws { background: #0066cc; color: white; }
+    .btn:hover { transform: scale(1.05); opacity: 0.9; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Welcome to CaPS Applications</h1>
+    <div class="buttons">
+      <a href="/btg-ehr/" class="btn btg">BtG Health App</a>
+      <a href="/PAWS/" class="btn paws">PAWS Application</a>
+    </div>
+  </div>
+</body>
+</html>
