@@ -1,217 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BtG Portal</title>
-  <style>
-    :root {
-      --mizzou-gold: #FDB719;
-      --tiger-black: #000000;
-      --black-tint: #333333;
-      --gold-tint: #FFEDCF;
-      --white: #FFFFFF;
-      --max-width: 1100px;
-      --shadow: 0 12px 30px rgba(0, 0, 0, 0.14);
-      --radius: 18px;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      color: var(--tiger-black);
-      background:
-        linear-gradient(135deg, rgba(253,183,25,0.16), rgba(255,255,255,0.92)),
-        linear-gradient(180deg, #ffffff 0%, #fff9ed 100%);
-      min-height: 100vh;
-    }
-
-    .topbar {
-      height: 12px;
-      background: var(--mizzou-gold);
-    }
-
-    .hero {
-      background: var(--tiger-black);
-      color: var(--white);
-      padding: 4.5rem 1.5rem 3rem;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero::after {
-      content: "";
-      position: absolute;
-      inset: auto -80px -90px auto;
-      width: 320px;
-      height: 320px;
-      background: radial-gradient(circle, rgba(253,183,25,0.28) 0%, rgba(253,183,25,0.08) 45%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .container {
-      width: min(100%, var(--max-width));
-      margin: 0 auto;
-    }
-
-    .eyebrow {
-      display: inline-block;
-      font-size: 0.85rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--mizzou-gold);
-      margin-bottom: 1rem;
-      font-weight: 700;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(2rem, 4vw, 3.5rem);
-      line-height: 1.05;
-    }
-
-    .subtext {
-      max-width: 720px;
-      margin-top: 1rem;
-      font-size: 1.05rem;
-      line-height: 1.7;
-      color: rgba(255,255,255,0.88);
-    }
-
-    main {
-      padding: 2rem 1.5rem 4rem;
-    }
-
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1.5rem;
-      margin-top: -2.25rem;
-      position: relative;
-      z-index: 2;
-    }
-
-    .nav-card {
-      background: var(--white);
-      border: 2px solid rgba(0,0,0,0.06);
-      border-top: 6px solid var(--mizzou-gold);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 1.5rem;
-      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
-    }
-
-    .nav-card:hover,
-    .nav-card:focus-within {
-      transform: translateY(-4px);
-      box-shadow: 0 16px 34px rgba(0,0,0,0.18);
-      border-color: rgba(253,183,25,0.55);
-    }
-
-    .nav-card h2 {
-      margin: 0 0 0.75rem;
-      font-size: 1.35rem;
-    }
-
-    .nav-card p {
-      margin: 0 0 1.25rem;
-      color: var(--black-tint);
-      line-height: 1.6;
-    }
-
-    .nav-card a {
-      display: inline-block;
-      text-decoration: none;
-      background: var(--tiger-black);
-      color: var(--white);
-      padding: 0.8rem 1.1rem;
-      border-radius: 999px;
-      font-weight: 700;
-      transition: background 0.18s ease, color 0.18s ease;
-    }
-
-    .nav-card a:hover,
-    .nav-card a:focus {
-      background: var(--mizzou-gold);
-      color: var(--tiger-black);
-    }
-
-    footer {
-      padding: 1.25rem 1.5rem 2.5rem;
-      color: var(--black-tint);
-      font-size: 0.95rem;
-    }
-
-    .brand-lockup {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-    }
-
-    .brand-mark {
-      width: 18px;
-      height: 18px;
-      background: var(--mizzou-gold);
-      border-radius: 3px;
-      display: inline-block;
-      box-shadow: inset 0 0 0 2px rgba(0,0,0,0.08);
-    }
-
-    @media (max-width: 640px) {
-      .hero { padding-top: 3.5rem; }
-      .card-grid { margin-top: -1.5rem; }
-    }
-  </style>
-</head>
-<body>
-  <div class="topbar"></div>
-
-  <header class="hero">
-    <div class="container">
-      <div class="brand-lockup">
-        <span class="brand-mark"></span>
-        <span>University of Missouri-inspired BtG platform</span>
-      </div>
-      <span class="eyebrow">BtG Learning Suite</span>
-      <h1>Bridge the Gap</h1>
-      <p class="subtext">
-        Interactive learning tools designed to simulate clinical thinking, reinforce knowledge, and prepare students for real-world medical decision-making.
-      </p>
-    </div>
-  </header>
-
-  <main>
-    <div class="container">
-      <section class="card-grid">
-
-        <article class="nav-card">
-          <h2>BtG EHR</h2>
-          <p>Interactive patient case simulation with chart navigation, diagnostics, and clinical decision-making.</p>
-          <a href="https://caps-nu.vercel.app" target="_blank" rel="noopener noreferrer">Launch Simulation</a>
-        </article>
-
-        <article class="nav-card">
-          <h2>BtG Quiz Bowl</h2>
-          <p>Fast-paced question-based challenge to reinforce clinical knowledge and test recall under pressure.</p>
-          <a href="https://chatgpt.com/canvas/shared/69d6b05b2de08191a5087d4540299065" target="_blank">Start Quiz</a>
-        </article>
-
-        <article class="nav-card">
-          <h2>Lung Sounds Matching</h2>
-          <p>Audio-based matching activity to build recognition of common and critical lung sounds.</p>
-          <a href="https://chatgpt.com/canvas/shared/69de8f6c8e1481919c949701ae2bb14a" target="_blank">Start Activity</a>
-        </article>
-
-      </section>
-    </div>
-  </main>
-
-  <footer>
-    BtG Learning Suite • Built for experiential medical education
-  </footer>
-</body>
-</html>
+{
+  "name": "jpaws-compliance-react-app",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.59.16",
+    "dexie": "^4.0.8",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.0",
+    "recharts": "^2.12.7",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.3",
+    "vite": "^5.4.10"
+  }
+}

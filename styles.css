@@ -1,0 +1,44 @@
+export const seed = {
+  students: [
+    { studentId: 'STU-000145', muid: '12345678', firstName: 'Jordan', lastName: 'Smith', preferredName: 'Jordan', muEmail: 'abc123@missouri.edu', programTrack: 'JPAWS', cohortYear: 2026, currentClassification: 'Junior', status: 'Active', highTouchMentorId: 'ADV-023', notesAdmin: 'Needs MCAT prep monitoring.' },
+    { studentId: 'STU-000146', muid: '22345678', firstName: 'Ariana', lastName: 'Brown', preferredName: 'Ari', muEmail: 'arbx2@missouri.edu', programTrack: 'PAWS', cohortYear: 2025, currentClassification: 'Sophomore', status: 'Active', highTouchMentorId: 'ADV-041', notesAdmin: 'Missing retreat attendance verification.' },
+    { studentId: 'STU-000147', muid: '32345678', firstName: 'Marcus', lastName: 'Hill', preferredName: '', muEmail: 'mhill@missouri.edu', programTrack: 'PAWS Scholar', cohortYear: 2024, currentClassification: 'Senior', status: 'On Hold', highTouchMentorId: 'ADV-057', notesAdmin: 'Follow-up overdue.' }
+  ],
+  advisors: [
+    { advisorId: 'ADV-023', fullName: 'Dr. Joel Stancer', roleType: 'HTM', email: 'stancerj@missouri.edu', department: 'School of Medicine', activeFlag: true },
+    { advisorId: 'ADV-041', fullName: 'Case Liaison Team', roleType: 'CASE Liaison', email: 'case@missouri.edu', department: 'Program Office', activeFlag: true },
+    { advisorId: 'ADV-057', fullName: 'Well-Being Advisor', roleType: 'Well-Being Advisor', email: 'wellbeing@missouri.edu', department: 'Program Office', activeFlag: true }
+  ],
+  requirements: [
+    { requirementId: 'REQ-010', requirementName: 'Annual Contract Submission', requirementCategory: 'Compliance', appliesToProgram: 'JPAWS, PAWS', requiredFlag: true, activeFlag: true },
+    { requirementId: 'REQ-014', requirementName: 'Retreat Attendance', requirementCategory: 'Event', appliesToProgram: 'JPAWS, PAWS', requiredFlag: true, activeFlag: true },
+    { requirementId: 'REQ-018', requirementName: 'HTM Meeting Completion', requirementCategory: 'Meeting', appliesToProgram: 'JPAWS, PAWS', requiredFlag: true, activeFlag: true },
+    { requirementId: 'REQ-021', requirementName: 'MCAT Prep Attendance Threshold', requirementCategory: 'Academic', appliesToProgram: 'JPAWS', requiredFlag: false, activeFlag: true }
+  ],
+  studentRequirements: [
+    { studentRequirementStatusId: 'SRS-9001', studentId: 'STU-000145', requirementId: 'REQ-010', requirementCycle: '2025-2026', completionStatus: 'Completed', completionDate: '2025-09-05', verifiedByAdvisorId: 'ADV-023', evidenceLink: '', notesRequirement: '' },
+    { studentRequirementStatusId: 'SRS-9002', studentId: 'STU-000145', requirementId: 'REQ-018', requirementCycle: '2025-2026', completionStatus: 'In Progress', completionDate: '', verifiedByAdvisorId: '', evidenceLink: '', notesRequirement: '' },
+    { studentRequirementStatusId: 'SRS-9003', studentId: 'STU-000146', requirementId: 'REQ-014', requirementCycle: '2025-2026', completionStatus: 'Not Started', completionDate: '', verifiedByAdvisorId: '', evidenceLink: '', notesRequirement: '' },
+    { studentRequirementStatusId: 'SRS-9004', studentId: 'STU-000147', requirementId: 'REQ-018', requirementCycle: '2025-2026', completionStatus: 'Completed', completionDate: '2026-01-28', verifiedByAdvisorId: 'ADV-057', evidenceLink: '', notesRequirement: '' }
+  ],
+  events: [
+    { eventId: 'EVT-204', eventName: 'Pre-Med Day 2026', eventCategory: 'Pre-Med Day', eventDate: '2026-02-15', requiredFlag: true, requirementId: 'REQ-014', location: 'SOM M525' },
+    { eventId: 'EVT-205', eventName: 'MCAT Prep Session 1', eventCategory: 'MCAT Prep', eventDate: '2026-02-22', requiredFlag: false, requirementId: 'REQ-021', location: 'Virtual' }
+  ],
+  participation: [
+    { participationId: 'PAR-4401', studentId: 'STU-000145', eventId: 'EVT-205', participationStatus: 'Attended', participationDate: '2026-02-22', verifiedByAdvisorId: 'ADV-023', notesParticipation: '' },
+    { participationId: 'PAR-4402', studentId: 'STU-000146', eventId: 'EVT-204', participationStatus: 'Absent', participationDate: '2026-02-15', verifiedByAdvisorId: 'ADV-041', notesParticipation: '' }
+  ],
+  shadowing: [
+    { shadowingWorkflowId: 'SHD-301', studentId: 'STU-000145', shadowingCycle: '2025-2026', eligibilityStatus: 'Eligible', eligibilityDate: '2025-08-20', vettingRequestSubmittedDate: '2025-09-01', vettingStatus: 'Cleared', hRClearanceReceivedDate: '2025-09-20', readyForMatchingFlag: true, matchStatus: 'Matched', matchedSpecialty: 'Pediatrics', matchedProvider: 'Dr. Jane Doe', matchDate: '2025-10-01', shadowingCompletedDate: '2025-10-15', notesShadowing: '' },
+    { shadowingWorkflowId: 'SHD-302', studentId: 'STU-000146', shadowingCycle: '2025-2026', eligibilityStatus: 'Eligible', eligibilityDate: '2025-08-20', vettingRequestSubmittedDate: '2025-10-01', vettingStatus: 'Submitted', hRClearanceReceivedDate: '', readyForMatchingFlag: false, matchStatus: 'Not Ready', matchedSpecialty: '', matchedProvider: '', matchDate: '', shadowingCompletedDate: '', notesShadowing: '' },
+    { shadowingWorkflowId: 'SHD-303', studentId: 'STU-000147', shadowingCycle: '2025-2026', eligibilityStatus: 'Not Eligible', eligibilityDate: '', vettingRequestSubmittedDate: '', vettingStatus: 'Not Started', hRClearanceReceivedDate: '', readyForMatchingFlag: false, matchStatus: 'Not Ready', matchedSpecialty: '', matchedProvider: '', matchDate: '', shadowingCompletedDate: '', notesShadowing: '' }
+  ],
+  advising: [
+    { meetingId: 'MTG-7811', studentId: 'STU-000145', advisorId: 'ADV-023', meetingType: 'HTM', meetingDate: '2026-01-28', meetingMode: 'In-person', meetingRequiredFlag: true, meetingSummary: 'Discussed time management and MCAT prep.', followUpNeeded: true, followUpDate: '2026-02-15', concernLevel: 'Low', referralMade: false, referralType: '', notesPrivateFlag: false },
+    { meetingId: 'MTG-7812', studentId: 'STU-000147', advisorId: 'ADV-057', meetingType: 'Well-Being', meetingDate: '2026-02-05', meetingMode: 'Virtual', meetingRequiredFlag: true, meetingSummary: 'Reviewed academic stress and resources.', followUpNeeded: true, followUpDate: '2026-02-20', concernLevel: 'High', referralMade: true, referralType: 'Counseling', notesPrivateFlag: true }
+  ],
+  outcomes: [
+    { alumniOutcomeId: 'ALM-990', studentId: 'STU-000145', updateDate: '2026-09-15', graduationDate: '2026-05-15', applicationCycle: '2026 cycle', appliedToMedicalSchoolFlag: true, acceptedToMedicalSchoolFlag: true, matriculatedFlag: false, matriculatedSchool: 'University of Missouri School of Medicine', currentProgramOrPosition: 'Gap year researcher', updateSource: 'Advisor', notesOutcome: '' }
+  ]
+}
