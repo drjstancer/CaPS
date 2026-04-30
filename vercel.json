@@ -1,11 +1,6 @@
 {
-  "routes": [
-    { "src": "^/$", "dest": "/index.html" },
-
-    { "src": "^/btg-ehr$", "dest": "/btg-ehr/index.html" },
-    { "src": "^/btg-ehr/(.*)", "dest": "/btg-ehr/index.html" },
-
-    { "src": "^/PAWS$", "dest": "/PAWS/index.html" },
-    { "src": "^/PAWS/(.*)", "dest": "/PAWS/index.html" }
+  "rewrites": [
+    { "source": "/btg-ehr/:path*", "destination": "/btg-ehr/index.html" },
+    { "source": "/PAWS/:path*", "destination": "/PAWS/index.html" }
   ]
 }
