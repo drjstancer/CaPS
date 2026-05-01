@@ -1,0 +1,50 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Build site
+        run: |
+          rm -rf dist
+          mkdir -p dist
+          cp index.html dist/index.html
+          mkdir -p dist/btg
+          cp btg/index.html dist/btg/index.html
+          npm --prefix btg-ehr install
+          npm --prefix btg-ehr run build -- --base=/CaPS/btg-ehr/
+          cp -R btg-ehr/dist dist/btg-ehr
+          npm --prefix PAWS install
+          npm --prefix PAWS run build -- --base=/CaPS/PAWS/
+          cp -R PAWS/dist dist/PAWS
+          touch dist/.nojekyll
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to Pages
+        uses: actions/deploy-pages@v4
