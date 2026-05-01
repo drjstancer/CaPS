@@ -29,13 +29,19 @@ jobs:
           mkdir -p dist/btg
           cp btg/index.html dist/btg/index.html
           sed -i 's|href="../"|href="../index.html"|g' dist/btg/index.html
+
+          # Build BtG EHR for GitHub Pages. The app image references are absolute in source,
+          # so rewrite them in the build copy to include the /CaPS/btg-ehr/ base path.
+          sed -i 's|"/case|"/CaPS/btg-ehr/case|g' btg-ehr/src/mubtgehr.jsx
           npm --prefix btg-ehr install
           npm --prefix btg-ehr run build -- --base=/CaPS/btg-ehr/
           cp -R btg-ehr/dist dist/btg-ehr
+
+          # Build PAWS for GitHub Pages and rewrite the source home link before build.
+          sed -i "s|<a href='/'|<a href='../index.html'|g" PAWS/src/main.jsx
           npm --prefix PAWS install
           npm --prefix PAWS run build -- --base=/CaPS/PAWS/
           cp -R PAWS/dist dist/PAWS
-          find dist/PAWS/assets -type f -name "*.js" -exec sed -i 's|href:"/"|href:"../index.html"|g' {} +
           touch dist/.nojekyll
       - name: Configure Pages
         uses: actions/configure-pages@v5
