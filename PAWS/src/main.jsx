@@ -1,253 +1,33 @@
-import React, { useMemo, useState } from 'react';
-import { createRoot } from 'react-dom/client';
+import React,{useMemo,useState}from'react';
+import{createRoot}from'react-dom/client';
 
-const baseStudents = [
-  { name: 'Jordan Ellis', muId: '12890431', track: 'JPAWS', classification: 'Freshman', advising: true, attendance: 92, shadowing: false, retreat: false, gpa: 3.72, ruca: 2, notes: 'Strong attendance and advising engagement. Shadowing not required yet for current classification.', nextStep: 'Continue fall advising cadence and confirm sophomore shadowing readiness timeline.' },
-  { name: 'Maya Brooks', muId: '12944780', track: 'JPAWS', classification: 'Sophomore', advising: true, attendance: 84, shadowing: true, retreat: false, gpa: 3.48, ruca: 6, notes: 'Shadowing is active, but attendance dipped below ideal PAWS engagement target.', nextStep: 'Schedule check-in and review barriers to program attendance.' },
-  { name: 'Chris Nguyen', muId: '12483019', track: 'PAWS Achievers', classification: 'Junior', advising: true, attendance: 96, shadowing: true, retreat: true, gpa: 3.81, ruca: 1, notes: 'High engagement across requirements. Strong academic standing.', nextStep: 'Maintain documentation and prepare for next milestone review.' },
-  { name: 'Amara Johnson', muId: '12033845', track: 'PAWS Pre-Admissions', classification: 'Senior', advising: false, attendance: 76, shadowing: true, retreat: true, gpa: 3.34, ruca: 8, notes: 'Advising requirement is incomplete and attendance is below target. Needs immediate outreach.', nextStep: 'Send advising appointment reminder and flag for staff follow-up.' },
-  { name: 'Elijah Carter', muId: '11877205', track: 'PAWS Scholars', classification: 'M1', advising: true, attendance: 88, shadowing: true, retreat: true, gpa: 3.67, ruca: 3, notes: 'Medical student mentor profile is active. Engagement remains stable.', nextStep: 'Confirm availability for upcoming pathway student panel.' },
+const baseStudents=[
+{name:'Jordan Ellis',muId:'12890431',advisor:'Dr. J',track:'JPAWS',classification:'Freshman',advising:true,attendance:92,shadowing:false,retreat:false,gpa:3.72,ruca:2,notes:'Strong attendance and advising engagement. Shadowing not required yet.',nextStep:'Continue fall advising cadence and confirm sophomore shadowing readiness timeline.'},
+{name:'Maya Brooks',muId:'12944780',advisor:'Dr. J',track:'JPAWS',classification:'Sophomore',advising:true,attendance:84,shadowing:true,retreat:false,gpa:3.48,ruca:6,notes:'Shadowing is active, but attendance dipped below ideal target.',nextStep:'Schedule check-in and review barriers to program attendance.'},
+{name:'Chris Nguyen',muId:'12483019',advisor:'Dr. Simmons',track:'PAWS Achievers',classification:'Junior',advising:true,attendance:96,shadowing:true,retreat:true,gpa:3.81,ruca:1,notes:'High engagement across requirements. Strong academic standing.',nextStep:'Maintain documentation and prepare for next milestone review.'},
+{name:'Amara Johnson',muId:'12033845',advisor:'Dr. J',track:'PAWS Pre-Admissions',classification:'Senior',advising:false,attendance:76,shadowing:true,retreat:true,gpa:3.34,ruca:8,notes:'Advising requirement is incomplete and attendance is below target.',nextStep:'Send advising appointment reminder and flag for staff follow-up.'},
+{name:'Elijah Carter',muId:'11877205',advisor:'Dr. HK',track:'PAWS Scholars',classification:'M1',advising:true,attendance:88,shadowing:true,retreat:true,gpa:3.67,ruca:3,notes:'Medical student mentor profile is active. Engagement remains stable.',nextStep:'Confirm availability for upcoming pathway student panel.'}
 ];
+const reqs=['Advising','Attendance','Shadowing/Vetting','Retreat','Academic Standing'];
+const today=()=>new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+function flags(s){const f=[];if(!s.advising)f.push('Missing advising requirement');if(s.attendance<80)f.push('Attendance below 80%');if(s.gpa<3.3)f.push('GPA below 3.30');if(['Sophomore','Junior','Senior'].includes(s.classification)&&!s.shadowing)f.push('Shadowing/vetting not documented');if(['Junior','Senior'].includes(s.classification)&&!s.retreat)f.push('Retreat requirement incomplete');return f}
+function status(s){const f=flags(s);if(f.some(x=>x.includes('Missing advising')||x.includes('below 80%')))return'Needs Follow-Up';if(f.length||s.attendance<88||s.gpa<3.5)return'Watch';return'On Track'}
+function initialLogs(){return{'12033845':[{date:today(),type:'Advising Outreach',note:'Mock log: student flagged for advising follow-up and attendance support.',by:'Dr. J'}],'12944780':[{date:today(),type:'Attendance Check-In',note:'Mock log: review attendance barriers and confirm next session attendance.',by:'Dr. J'}]}}
 
-const reqs = ['Advising', 'Attendance', 'Shadowing/Vetting', 'Retreat', 'Academic Standing'];
-
-function deriveFlags(s) {
-  const flags = [];
-  if (!s.advising) flags.push('Missing advising requirement');
-  if (s.attendance < 80) flags.push('Attendance below 80%');
-  if (s.gpa < 3.3) flags.push('GPA below 3.30');
-  if ((s.classification === 'Sophomore' || s.classification === 'Junior' || s.classification === 'Senior') && !s.shadowing) flags.push('Shadowing/vetting not documented');
-  if ((s.classification === 'Junior' || s.classification === 'Senior') && !s.retreat) flags.push('Retreat requirement incomplete');
-  return flags;
+function PAWSApp(){
+ const[view,setView]=useState('home'),[filter,setFilter]=useState('All'),[followUps,setFollowUps]=useState({}),[logs,setLogs]=useState(initialLogs());
+ const students=useMemo(()=>baseStudents.map(s=>({...s,flags:flags(s),status:status(s)})),[]);
+ const visible=filter==='All'?students:students.filter(s=>s.status===filter);
+ const metrics=useMemo(()=>({onTrack:students.filter(s=>s.status==='On Track').length,needs:students.filter(s=>s.status!=='On Track').length,avgAttendance:Math.round(students.reduce((a,s)=>a+s.attendance,0)/students.length),shadowReady:students.filter(s=>s.shadowing).length,flagged:Object.values(followUps).filter(Boolean).length,logs:Object.values(logs).flat().length}),[students,followUps,logs]);
+ return <main style={styles.page}><section style={styles.card}><div style={styles.topRow}><div><div style={styles.badge}>Mock System</div><h1 style={styles.title}>PAWS Program Operations Mock</h1><p style={styles.text}>Program management and compliance tracking tools for PAWS pathway operations.</p></div><a href='/' style={styles.homeLink}>CaPS Home</a></div>{view==='home'?<Home setView={setView}/>:view==='advisor'?<AdvisorWorkflow students={students} logs={logs} followUps={followUps} onBack={()=>setView('home')}/>:<Dashboard students={students} filter={filter} setFilter={setFilter} visible={visible} metrics={metrics} followUps={followUps} setFollowUps={setFollowUps} logs={logs} setLogs={setLogs} onBack={()=>setView('home')} openAdvisor={()=>setView('advisor')}/>}</section></main>
 }
-
-function deriveStatus(s) {
-  const flags = deriveFlags(s);
-  if (flags.some(f => f.includes('Missing advising') || f.includes('below 80%'))) return 'Needs Follow-Up';
-  if (flags.length > 0 || s.attendance < 88 || s.gpa < 3.5) return 'Watch';
-  return 'On Track';
-}
-
-function PAWSApp() {
-  const [view, setView] = useState('home');
-  const [filter, setFilter] = useState('All');
-  const [followUps, setFollowUps] = useState({});
-  const students = useMemo(() => baseStudents.map(s => ({ ...s, flags: deriveFlags(s), status: deriveStatus(s) })), []);
-  const visible = filter === 'All' ? students : students.filter(s => s.status === filter);
-  const metrics = useMemo(() => {
-    const onTrack = students.filter(s => s.status === 'On Track').length;
-    const needs = students.filter(s => s.status !== 'On Track').length;
-    const avgAttendance = Math.round(students.reduce((sum, s) => sum + s.attendance, 0) / students.length);
-    const shadowReady = students.filter(s => s.shadowing).length;
-    const flagged = Object.values(followUps).filter(Boolean).length;
-    return { onTrack, needs, avgAttendance, shadowReady, flagged };
-  }, [students, followUps]);
-
-  return (
-    <main style={styles.page}>
-      <section style={styles.card}>
-        <div style={styles.topRow}>
-          <div>
-            <div style={styles.badge}>Mock System</div>
-            <h1 style={styles.title}>PAWS Program Operations Mock</h1>
-            <p style={styles.text}>Program management and compliance tracking tools for PAWS pathway operations.</p>
-          </div>
-          <a href="/" style={styles.homeLink}>CaPS Home</a>
-        </div>
-
-        {view === 'home' ? (
-          <div style={styles.grid}>
-            <button style={styles.tileButton} onClick={() => setView('dashboard')}>
-              <h2 style={styles.tileTitle}>Compliance Dashboard</h2>
-              <p style={styles.tileText}>Track requirements, auto-flags, follow-ups, and student progress.</p>
-              <span style={styles.open}>Open module →</span>
-            </button>
-            <div style={styles.tile}><h2 style={styles.tileTitle}>Student Records</h2><p style={styles.tileText}>Manage pathway participation and advising data. Coming next.</p></div>
-            <div style={styles.tile}><h2 style={styles.tileTitle}>Reports</h2><p style={styles.tileText}>Prepare exports and summaries for program review. Coming next.</p></div>
-          </div>
-        ) : (
-          <Dashboard students={students} filter={filter} setFilter={setFilter} visible={visible} metrics={metrics} followUps={followUps} setFollowUps={setFollowUps} onBack={() => setView('home')} />
-        )}
-      </section>
-    </main>
-  );
-}
-
-function Dashboard({ filter, setFilter, visible, metrics, followUps, setFollowUps, onBack }) {
-  const [selected, setSelected] = useState(null);
-  const activeStudent = selected && visible.some(s => s.name === selected.name) ? selected : null;
-
-  function toggleFollowUp(student) {
-    setFollowUps(prev => ({ ...prev, [student.muId]: !prev[student.muId] }));
-  }
-
-  return (
-    <div>
-      <button style={styles.backButton} onClick={onBack}>← Back to PAWS modules</button>
-      <div style={styles.dashboardHeader}>
-        <div>
-          <h2 style={styles.sectionTitle}>Compliance Dashboard</h2>
-          <p style={styles.smallText}>Mock data with auto-flagging rules and local follow-up tracking.</p>
-        </div>
-        <select value={filter} onChange={e => { setFilter(e.target.value); setSelected(null); }} style={styles.select}>
-          {['All', 'On Track', 'Watch', 'Needs Follow-Up'].map(v => <option key={v}>{v}</option>)}
-        </select>
-      </div>
-
-      <div style={styles.metricGrid}>
-        <Metric label="On Track" value={metrics.onTrack} />
-        <Metric label="Needs Attention" value={metrics.needs} />
-        <Metric label="Avg Attendance" value={`${metrics.avgAttendance}%`} />
-        <Metric label="Shadow Ready" value={metrics.shadowReady} />
-        <Metric label="Flagged Follow-Ups" value={metrics.flagged} />
-      </div>
-
-      <div style={styles.rulePanel}>
-        <strong>Auto-flag rules:</strong> Missing advising or attendance below 80% = Needs Follow-Up. GPA below 3.30, incomplete requirements, attendance below 88%, or GPA below 3.50 = Watch.
-      </div>
-
-      <div style={styles.requirementPanel}>
-        <h3 style={styles.panelTitle}>Requirement Categories</h3>
-        <div style={styles.reqGrid}>{reqs.map(r => <span key={r} style={styles.reqPill}>{r}</span>)}</div>
-      </div>
-
-      <div style={styles.dashboardGrid}>
-        <div style={styles.tableWrap}>
-          <table style={styles.table}>
-            <thead><tr>{['Student', 'Track', 'Class', 'Flags', 'Follow-Up', 'Status'].map(h => <th key={h} style={styles.th}>{h}</th>)}</tr></thead>
-            <tbody>
-              {visible.map(s => (
-                <tr key={s.name} onClick={() => setSelected(s)} style={{...styles.row, ...(activeStudent?.name === s.name ? styles.activeRow : {})}}>
-                  <td style={styles.td}><strong>{s.name}</strong><div style={styles.subCell}>MU ID {s.muId}</div></td>
-                  <td style={styles.td}>{s.track}</td>
-                  <td style={styles.td}>{s.classification}</td>
-                  <td style={styles.td}>{s.flags.length ? s.flags.length : 'None'}</td>
-                  <td style={styles.td}>{followUps[s.muId] ? <span style={styles.followBadge}>Flagged</span> : <span style={styles.muted}>—</span>}</td>
-                  <td style={styles.td}><span style={{...styles.status, ...statusStyle(s.status)}}>{s.status}</span></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        <StudentDetail student={activeStudent} isFlagged={activeStudent ? !!followUps[activeStudent.muId] : false} onToggleFollowUp={toggleFollowUp} />
-      </div>
-    </div>
-  );
-}
-
-function StudentDetail({ student, isFlagged, onToggleFollowUp }) {
-  if (!student) {
-    return <aside style={styles.detailPanel}><h3 style={styles.panelTitle}>Student Detail</h3><p style={styles.tileText}>Select a student row to open their compliance profile.</p></aside>;
-  }
-
-  const checklist = [
-    ['Advising', student.advising],
-    ['Attendance 80%+', student.attendance >= 80],
-    ['Shadowing/Vetting', student.shadowing],
-    ['Retreat', student.retreat],
-    ['Academic Standing', student.gpa >= 3.3],
-  ];
-
-  return (
-    <aside style={styles.detailPanel}>
-      <div style={styles.detailHeader}>
-        <div><h3 style={styles.detailName}>{student.name}</h3><p style={styles.detailMeta}>{student.track} • {student.classification}</p></div>
-        <span style={{...styles.status, ...statusStyle(student.status)}}>{student.status}</span>
-      </div>
-
-      <button style={isFlagged ? styles.unflagButton : styles.flagButton} onClick={() => onToggleFollowUp(student)}>
-        {isFlagged ? 'Remove Follow-Up Flag' : 'Flag for Follow-Up'}
-      </button>
-
-      <div style={styles.detailStats}>
-        <Mini label="MU ID" value={student.muId} />
-        <Mini label="RUCA" value={student.ruca} />
-        <Mini label="GPA" value={student.gpa} />
-        <Mini label="Attendance" value={`${student.attendance}%`} />
-      </div>
-
-      <h4 style={styles.detailSectionTitle}>Auto-Flags</h4>
-      {student.flags.length ? <div style={styles.flagList}>{student.flags.map(f => <span key={f} style={styles.autoFlag}>{f}</span>)}</div> : <p style={styles.goodBox}>No auto-flags detected.</p>}
-
-      <h4 style={styles.detailSectionTitle}>Compliance Checklist</h4>
-      <div style={styles.checkList}>{checklist.map(([label, done]) => <div key={label} style={styles.checkItem}><span style={{...styles.checkDot, background: done ? '#22c55e' : '#ef4444'}}>{done ? '✓' : '!'}</span><span>{label}</span></div>)}</div>
-
-      <h4 style={styles.detailSectionTitle}>Staff Notes</h4>
-      <p style={styles.noteBox}>{student.notes}</p>
-
-      <h4 style={styles.detailSectionTitle}>Recommended Next Step</h4>
-      <p style={styles.nextStep}>{isFlagged ? 'Follow-up flag is active. Document outreach after contact is made.' : student.nextStep}</p>
-    </aside>
-  );
-}
-
-function Mini({ label, value }) { return <div style={styles.mini}><div style={styles.miniLabel}>{label}</div><div style={styles.miniValue}>{value}</div></div>; }
-function Metric({ label, value }) { return <div style={styles.metric}><div style={styles.metricValue}>{value}</div><div style={styles.metricLabel}>{label}</div></div>; }
-function statusStyle(status) {
-  if (status === 'On Track') return { background: '#dcfce7', color: '#166534' };
-  if (status === 'Watch') return { background: '#fef9c3', color: '#854d0e' };
-  return { background: '#fee2e2', color: '#991b1b' };
-}
-
-const styles = {
-  page: { minHeight: '100vh', margin: 0, padding: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Arial, Helvetica, sans-serif', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 45%, #f8fafc 45%, #ffffff 100%)' },
-  card: { width: 'min(100%, 1240px)', background: '#fff', borderRadius: 28, padding: 42, boxShadow: '0 22px 55px rgba(0,0,0,.24)', border: '1px solid rgba(15,23,42,.12)' },
-  topRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 18, flexWrap: 'wrap' },
-  badge: { display: 'inline-block', background: '#FDB719', color: '#000', fontWeight: 900, borderRadius: 999, padding: '9px 14px', marginBottom: 16 },
-  title: { margin: 0, fontSize: 'clamp(2.2rem, 5vw, 4rem)', lineHeight: 1, letterSpacing: '-0.05em', color: '#0f172a' },
-  text: { maxWidth: 680, color: '#475569', fontSize: '1.08rem', lineHeight: 1.65, margin: '18px 0 30px' },
-  homeLink: { color: '#0f172a', fontWeight: 800, textDecoration: 'none' },
-  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 },
-  tile: { border: '1px solid #e2e8f0', borderTop: '5px solid #FDB719', borderRadius: 18, padding: 20, background: '#f8fafc' },
-  tileButton: { border: '1px solid #e2e8f0', borderTop: '5px solid #FDB719', borderRadius: 18, padding: 20, background: '#f8fafc', textAlign: 'left', cursor: 'pointer', font: 'inherit' },
-  tileTitle: { margin: '0 0 8px', fontSize: '1.18rem', color: '#0f172a' },
-  tileText: { margin: 0, color: '#64748b', lineHeight: 1.5 },
-  open: { display: 'inline-block', marginTop: 16, fontWeight: 800, color: '#0f172a' },
-  backButton: { border: 0, background: 'transparent', color: '#0f172a', fontWeight: 800, cursor: 'pointer', padding: 0, marginBottom: 18 },
-  dashboardHeader: { display: 'flex', justifyContent: 'space-between', gap: 16, alignItems: 'center', flexWrap: 'wrap' },
-  sectionTitle: { margin: 0, fontSize: '1.8rem', color: '#0f172a' },
-  smallText: { margin: '8px 0 0', color: '#64748b' },
-  select: { border: '1px solid #cbd5e1', borderRadius: 12, padding: '10px 12px', background: '#fff' },
-  metricGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(145px, 1fr))', gap: 14, margin: '24px 0' },
-  metric: { background: '#0f172a', color: '#fff', borderRadius: 18, padding: 18 },
-  metricValue: { fontSize: '2rem', fontWeight: 900 },
-  metricLabel: { color: '#cbd5e1', fontSize: '.9rem' },
-  rulePanel: { background: '#fff3d6', border: '1px solid #FDB719', borderRadius: 16, padding: 14, marginBottom: 16, color: '#3f2f00', lineHeight: 1.45 },
-  requirementPanel: { border: '1px solid #e2e8f0', borderRadius: 18, padding: 18, marginBottom: 18, background: '#f8fafc' },
-  panelTitle: { margin: '0 0 12px', color: '#0f172a' },
-  reqGrid: { display: 'flex', flexWrap: 'wrap', gap: 10 },
-  reqPill: { background: '#fff3d6', border: '1px solid #FDB719', borderRadius: 999, padding: '8px 10px', fontWeight: 700 },
-  dashboardGrid: { display: 'grid', gridTemplateColumns: 'minmax(0, 1.55fr) minmax(300px, .85fr)', gap: 18, alignItems: 'start' },
-  tableWrap: { overflowX: 'auto', border: '1px solid #e2e8f0', borderRadius: 18 },
-  table: { width: '100%', borderCollapse: 'collapse', minWidth: 760 },
-  th: { textAlign: 'left', padding: 14, background: '#f1f5f9', color: '#334155', fontSize: '.85rem', textTransform: 'uppercase', letterSpacing: '.06em' },
-  td: { padding: 14, borderTop: '1px solid #e2e8f0', color: '#0f172a' },
-  row: { cursor: 'pointer' },
-  activeRow: { background: '#fff7df' },
-  subCell: { color: '#64748b', fontSize: '.78rem', marginTop: 3 },
-  muted: { color: '#94a3b8' },
-  followBadge: { background: '#dbeafe', color: '#1d4ed8', borderRadius: 999, padding: '6px 10px', fontWeight: 800, fontSize: '.82rem' },
-  status: { borderRadius: 999, padding: '6px 10px', fontWeight: 800, fontSize: '.82rem', whiteSpace: 'nowrap' },
-  detailPanel: { border: '1px solid #e2e8f0', borderRadius: 18, padding: 18, background: '#f8fafc', minHeight: 240 },
-  detailHeader: { display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'flex-start' },
-  detailName: { margin: 0, color: '#0f172a', fontSize: '1.35rem' },
-  detailMeta: { margin: '6px 0 0', color: '#64748b' },
-  flagButton: { width: '100%', border: 0, borderRadius: 14, padding: 12, margin: '16px 0 0', background: '#0f172a', color: '#fff', fontWeight: 900, cursor: 'pointer' },
-  unflagButton: { width: '100%', border: 0, borderRadius: 14, padding: 12, margin: '16px 0 0', background: '#dbeafe', color: '#1d4ed8', fontWeight: 900, cursor: 'pointer' },
-  detailStats: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10, margin: '18px 0' },
-  mini: { background: '#fff', border: '1px solid #e2e8f0', borderRadius: 14, padding: 12 },
-  miniLabel: { color: '#64748b', fontSize: '.75rem', textTransform: 'uppercase', letterSpacing: '.06em' },
-  miniValue: { color: '#0f172a', fontWeight: 900, marginTop: 4 },
-  detailSectionTitle: { margin: '18px 0 10px', color: '#0f172a' },
-  flagList: { display: 'grid', gap: 8 },
-  autoFlag: { background: '#fee2e2', color: '#991b1b', borderRadius: 12, padding: '8px 10px', fontWeight: 800, fontSize: '.86rem' },
-  goodBox: { margin: 0, padding: 12, background: '#dcfce7', borderRadius: 14, color: '#166534', fontWeight: 800 },
-  checkList: { display: 'grid', gap: 8 },
-  checkItem: { display: 'flex', alignItems: 'center', gap: 10, color: '#0f172a' },
-  checkDot: { width: 22, height: 22, borderRadius: '50%', display: 'grid', placeItems: 'center', color: '#fff', fontSize: '.75rem', fontWeight: 900 },
-  noteBox: { margin: 0, padding: 12, background: '#fff', border: '1px solid #e2e8f0', borderRadius: 14, color: '#475569', lineHeight: 1.5 },
-  nextStep: { margin: 0, padding: 12, background: '#fff3d6', border: '1px solid #FDB719', borderRadius: 14, color: '#3f2f00', lineHeight: 1.5, fontWeight: 700 },
-};
-
-createRoot(document.getElementById('root')).render(<PAWSApp />);
+function Home({setView}){return <div style={styles.grid}><button style={styles.tileButton} onClick={()=>setView('dashboard')}><h2 style={styles.tileTitle}>Compliance Dashboard</h2><p style={styles.tileText}>Track requirements, auto-flags, follow-ups, interventions, and student progress.</p><span style={styles.open}>Open module →</span></button><button style={styles.tileButton} onClick={()=>setView('advisor')}><h2 style={styles.tileTitle}>Advisor Workflow View</h2><p style={styles.tileText}>See who needs contact, what action is due, and recent intervention history.</p><span style={styles.open}>Open workflow →</span></button><div style={styles.tile}><h2 style={styles.tileTitle}>Reports</h2><p style={styles.tileText}>Prepare exports and summaries for program review. Coming next.</p></div></div>}
+function Dashboard(p){const{filter,setFilter,visible,metrics,followUps,setFollowUps,logs,setLogs,onBack,openAdvisor}=p;const[selected,setSelected]=useState(null);const active=selected&&visible.some(s=>s.muId===selected.muId)?selected:null;const toggle=s=>setFollowUps(prev=>({...prev,[s.muId]:!prev[s.muId]}));const addLog=(s,entry)=>setLogs(prev=>({...prev,[s.muId]:[entry,...(prev[s.muId]||[])]}));return <div><div style={styles.toolbar}><button style={styles.backButton} onClick={onBack}>← Back to PAWS modules</button><button style={styles.secondaryBtn} onClick={openAdvisor}>Open Advisor Workflow →</button></div><div style={styles.dashboardHeader}><div><h2 style={styles.sectionTitle}>Compliance Dashboard</h2><p style={styles.smallText}>Mock data with auto-flagging, follow-up tracking, and intervention logging.</p></div><select value={filter} onChange={e=>{setFilter(e.target.value);setSelected(null)}} style={styles.select}>{['All','On Track','Watch','Needs Follow-Up'].map(v=><option key={v}>{v}</option>)}</select></div><div style={styles.metricGrid}><Metric label='On Track' value={metrics.onTrack}/><Metric label='Needs Attention' value={metrics.needs}/><Metric label='Avg Attendance' value={`${metrics.avgAttendance}%`}/><Metric label='Shadow Ready' value={metrics.shadowReady}/><Metric label='Flagged Follow-Ups' value={metrics.flagged}/><Metric label='Logged Interventions' value={metrics.logs}/></div><div style={styles.rulePanel}><strong>Auto-flag rules:</strong> Missing advising or attendance below 80% = Needs Follow-Up. GPA below 3.30, incomplete requirements, attendance below 88%, or GPA below 3.50 = Watch.</div><div style={styles.requirementPanel}><h3 style={styles.panelTitle}>Requirement Categories</h3><div style={styles.reqGrid}>{reqs.map(r=><span key={r} style={styles.reqPill}>{r}</span>)}</div></div><div style={styles.dashboardGrid}><StudentTable visible={visible} active={active} setSelected={setSelected} followUps={followUps} logs={logs}/><StudentDetail student={active} isFlagged={active?!!followUps[active.muId]:false} logs={active?logs[active.muId]||[]:[]} onToggleFollowUp={toggle} onAddLog={addLog}/></div></div>}
+function StudentTable({visible,active,setSelected,followUps,logs}){return <div style={styles.tableWrap}><table style={styles.table}><thead><tr>{['Student','Track','Class','Flags','Follow-Up','Logs','Status'].map(h=><th key={h} style={styles.th}>{h}</th>)}</tr></thead><tbody>{visible.map(s=><tr key={s.muId} onClick={()=>setSelected(s)} style={{...styles.row,...(active?.muId===s.muId?styles.activeRow:{})}}><td style={styles.td}><strong>{s.name}</strong><div style={styles.subCell}>MU ID {s.muId}</div></td><td style={styles.td}>{s.track}</td><td style={styles.td}>{s.classification}</td><td style={styles.td}>{s.flags.length||'None'}</td><td style={styles.td}>{followUps[s.muId]?<span style={styles.followBadge}>Flagged</span>:<span style={styles.muted}>—</span>}</td><td style={styles.td}>{(logs[s.muId]||[]).length}</td><td style={styles.td}><span style={{...styles.status,...statusStyle(s.status)}}>{s.status}</span></td></tr>)}</tbody></table></div>}
+function StudentDetail({student,isFlagged,logs,onToggleFollowUp,onAddLog}){const[type,setType]=useState('Advising Outreach'),[note,setNote]=useState('');if(!student)return <aside style={styles.detailPanel}><h3 style={styles.panelTitle}>Student Detail</h3><p style={styles.tileText}>Select a student row to open their compliance profile.</p></aside>;const checklist=[['Advising',student.advising],['Attendance 80%+',student.attendance>=80],['Shadowing/Vetting',student.shadowing],['Retreat',student.retreat],['Academic Standing',student.gpa>=3.3]];function submit(){const clean=note.trim();if(!clean)return;onAddLog(student,{date:today(),type,note:clean,by:'Mock Advisor'});setNote('')}return <aside style={styles.detailPanel}><div style={styles.detailHeader}><div><h3 style={styles.detailName}>{student.name}</h3><p style={styles.detailMeta}>{student.track} • {student.classification} • Advisor: {student.advisor}</p></div><span style={{...styles.status,...statusStyle(student.status)}}>{student.status}</span></div><button style={isFlagged?styles.unflagButton:styles.flagButton} onClick={()=>onToggleFollowUp(student)}>{isFlagged?'Remove Follow-Up Flag':'Flag for Follow-Up'}</button><div style={styles.detailStats}><Mini label='MU ID' value={student.muId}/><Mini label='RUCA' value={student.ruca}/><Mini label='GPA' value={student.gpa}/><Mini label='Attendance' value={`${student.attendance}%`}/></div><h4 style={styles.detailSectionTitle}>Auto-Flags</h4>{student.flags.length?<div style={styles.flagList}>{student.flags.map(f=><span key={f} style={styles.autoFlag}>{f}</span>)}</div>:<p style={styles.goodBox}>No auto-flags detected.</p>}<h4 style={styles.detailSectionTitle}>Compliance Checklist</h4><div style={styles.checkList}>{checklist.map(([label,done])=><div key={label} style={styles.checkItem}><span style={{...styles.checkDot,background:done?'#22c55e':'#ef4444'}}>{done?'✓':'!'}</span><span>{label}</span></div>)}</div><h4 style={styles.detailSectionTitle}>Log Intervention</h4><div style={styles.logForm}><select value={type} onChange={e=>setType(e.target.value)} style={styles.input}>{['Advising Outreach','Attendance Check-In','Academic Support','Shadowing/Vetting','General Note'].map(x=><option key={x}>{x}</option>)}</select><textarea value={note} onChange={e=>setNote(e.target.value)} placeholder='Document contact attempt, outcome, or next action...' style={styles.textarea}/><button onClick={submit} style={styles.flagButton}>Add Intervention Log</button></div><h4 style={styles.detailSectionTitle}>Intervention History</h4>{logs.length?<div style={styles.history}>{logs.map((l,i)=><div key={i} style={styles.logItem}><strong>{l.type}</strong><div style={styles.subCell}>{l.date} • {l.by}</div><p style={styles.logText}>{l.note}</p></div>)}</div>:<p style={styles.noteBox}>No interventions logged yet.</p>}<h4 style={styles.detailSectionTitle}>Recommended Next Step</h4><p style={styles.nextStep}>{isFlagged?'Follow-up flag is active. Document outreach after contact is made.':student.nextStep}</p></aside>}
+function AdvisorWorkflow({students,logs,followUps,onBack}){const queue=students.filter(s=>s.status!=='On Track'||followUps[s.muId]).sort((a,b)=>(b.status==='Needs Follow-Up')-(a.status==='Needs Follow-Up'));return <div><button style={styles.backButton} onClick={onBack}>← Back to PAWS modules</button><h2 style={styles.sectionTitle}>Advisor Workflow View</h2><p style={styles.smallText}>A mock advisor queue for outreach planning. This does not write to a database yet.</p><div style={styles.workflowGrid}><div style={styles.queuePanel}><h3 style={styles.panelTitle}>Priority Outreach Queue</h3>{queue.map(s=><div key={s.muId} style={styles.queueItem}><div><strong>{s.name}</strong><div style={styles.subCell}>{s.track} • {s.classification} • {s.advisor}</div></div><span style={{...styles.status,...statusStyle(s.status)}}>{s.status}</span><p style={styles.queueText}>{s.flags[0]||'Manual follow-up flag active'}</p></div>)}</div><div style={styles.queuePanel}><h3 style={styles.panelTitle}>Recent Interventions</h3>{Object.entries(logs).flatMap(([id,items])=>items.map(x=>({...x,id,student:students.find(s=>s.muId===id)?.name||id}))).slice(0,6).map((l,i)=><div key={i} style={styles.logItem}><strong>{l.student}</strong><div style={styles.subCell}>{l.date} • {l.type} • {l.by}</div><p style={styles.logText}>{l.note}</p></div>)}</div></div></div>}
+function Mini({label,value}){return <div style={styles.mini}><div style={styles.miniLabel}>{label}</div><div style={styles.miniValue}>{value}</div></div>}
+function Metric({label,value}){return <div style={styles.metric}><div style={styles.metricValue}>{value}</div><div style={styles.metricLabel}>{label}</div></div>}
+function statusStyle(s){if(s==='On Track')return{background:'#dcfce7',color:'#166534'};if(s==='Watch')return{background:'#fef9c3',color:'#854d0e'};return{background:'#fee2e2',color:'#991b1b'}}
+const styles={page:{minHeight:'100vh',margin:0,padding:32,display:'flex',alignItems:'center',justifyContent:'center',fontFamily:'Arial, Helvetica, sans-serif',background:'linear-gradient(135deg,#0f172a 0%,#1e293b 45%,#f8fafc 45%,#fff 100%)'},card:{width:'min(100%,1280px)',background:'#fff',borderRadius:28,padding:42,boxShadow:'0 22px 55px rgba(0,0,0,.24)',border:'1px solid rgba(15,23,42,.12)'},topRow:{display:'flex',justifyContent:'space-between',alignItems:'flex-start',gap:18,flexWrap:'wrap'},badge:{display:'inline-block',background:'#FDB719',color:'#000',fontWeight:900,borderRadius:999,padding:'9px 14px',marginBottom:16},title:{margin:0,fontSize:'clamp(2.2rem,5vw,4rem)',lineHeight:1,letterSpacing:'-.05em',color:'#0f172a'},text:{maxWidth:680,color:'#475569',fontSize:'1.08rem',lineHeight:1.65,margin:'18px 0 30px'},homeLink:{color:'#0f172a',fontWeight:800,textDecoration:'none'},grid:{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:16},tile:{border:'1px solid #e2e8f0',borderTop:'5px solid #FDB719',borderRadius:18,padding:20,background:'#f8fafc'},tileButton:{border:'1px solid #e2e8f0',borderTop:'5px solid #FDB719',borderRadius:18,padding:20,background:'#f8fafc',textAlign:'left',cursor:'pointer',font:'inherit'},tileTitle:{margin:'0 0 8px',fontSize:'1.18rem',color:'#0f172a'},tileText:{margin:0,color:'#64748b',lineHeight:1.5},open:{display:'inline-block',marginTop:16,fontWeight:800,color:'#0f172a'},toolbar:{display:'flex',justifyContent:'space-between',alignItems:'center',gap:12,flexWrap:'wrap'},backButton:{border:0,background:'transparent',color:'#0f172a',fontWeight:800,cursor:'pointer',padding:0,marginBottom:18},secondaryBtn:{border:'1px solid #cbd5e1',background:'#fff',borderRadius:999,padding:'10px 14px',fontWeight:800,cursor:'pointer'},dashboardHeader:{display:'flex',justifyContent:'space-between',gap:16,alignItems:'center',flexWrap:'wrap'},sectionTitle:{margin:0,fontSize:'1.8rem',color:'#0f172a'},smallText:{margin:'8px 0 0',color:'#64748b'},select:{border:'1px solid #cbd5e1',borderRadius:12,padding:'10px 12px',background:'#fff'},metricGrid:{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(145px,1fr))',gap:14,margin:'24px 0'},metric:{background:'#0f172a',color:'#fff',borderRadius:18,padding:18},metricValue:{fontSize:'2rem',fontWeight:900},metricLabel:{color:'#cbd5e1',fontSize:'.9rem'},rulePanel:{background:'#fff3d6',border:'1px solid #FDB719',borderRadius:16,padding:14,marginBottom:16,color:'#3f2f00',lineHeight:1.45},requirementPanel:{border:'1px solid #e2e8f0',borderRadius:18,padding:18,marginBottom:18,background:'#f8fafc'},panelTitle:{margin:'0 0 12px',color:'#0f172a'},reqGrid:{display:'flex',flexWrap:'wrap',gap:10},reqPill:{background:'#fff3d6',border:'1px solid #FDB719',borderRadius:999,padding:'8px 10px',fontWeight:700},dashboardGrid:{display:'grid',gridTemplateColumns:'minmax(0,1.45fr) minmax(320px,.9fr)',gap:18,alignItems:'start'},tableWrap:{overflowX:'auto',border:'1px solid #e2e8f0',borderRadius:18},table:{width:'100%',borderCollapse:'collapse',minWidth:820},th:{textAlign:'left',padding:14,background:'#f1f5f9',color:'#334155',fontSize:'.85rem',textTransform:'uppercase',letterSpacing:'.06em'},td:{padding:14,borderTop:'1px solid #e2e8f0',color:'#0f172a'},row:{cursor:'pointer'},activeRow:{background:'#fff7df'},subCell:{color:'#64748b',fontSize:'.78rem',marginTop:3},muted:{color:'#94a3b8'},followBadge:{background:'#dbeafe',color:'#1d4ed8',borderRadius:999,padding:'6px 10px',fontWeight:800,fontSize:'.82rem'},status:{borderRadius:999,padding:'6px 10px',fontWeight:800,fontSize:'.82rem',whiteSpace:'nowrap'},detailPanel:{border:'1px solid #e2e8f0',borderRadius:18,padding:18,background:'#f8fafc',minHeight:240},detailHeader:{display:'flex',justifyContent:'space-between',gap:12,alignItems:'flex-start'},detailName:{margin:0,color:'#0f172a',fontSize:'1.35rem'},detailMeta:{margin:'6px 0 0',color:'#64748b'},flagButton:{width:'100%',border:0,borderRadius:14,padding:12,margin:'16px 0 0',background:'#0f172a',color:'#fff',fontWeight:900,cursor:'pointer'},unflagButton:{width:'100%',border:0,borderRadius:14,padding:12,margin:'16px 0 0',background:'#dbeafe',color:'#1d4ed8',fontWeight:900,cursor:'pointer'},detailStats:{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:10,margin:'18px 0'},mini:{background:'#fff',border:'1px solid #e2e8f0',borderRadius:14,padding:12},miniLabel:{color:'#64748b',fontSize:'.75rem',textTransform:'uppercase',letterSpacing:'.06em'},miniValue:{color:'#0f172a',fontWeight:900,marginTop:4},detailSectionTitle:{margin:'18px 0 10px',color:'#0f172a'},flagList:{display:'grid',gap:8},autoFlag:{background:'#fee2e2',color:'#991b1b',borderRadius:12,padding:'8px 10px',fontWeight:800,fontSize:'.86rem'},goodBox:{margin:0,padding:12,background:'#dcfce7',borderRadius:14,color:'#166534',fontWeight:800},checkList:{display:'grid',gap:8},checkItem:{display:'flex',alignItems:'center',gap:10,color:'#0f172a'},checkDot:{width:22,height:22,borderRadius:'50%',display:'grid',placeItems:'center',color:'#fff',fontSize:'.75rem',fontWeight:900},noteBox:{margin:0,padding:12,background:'#fff',border:'1px solid #e2e8f0',borderRadius:14,color:'#475569',lineHeight:1.5},nextStep:{margin:0,padding:12,background:'#fff3d6',border:'1px solid #FDB719',borderRadius:14,color:'#3f2f00',lineHeight:1.5,fontWeight:700},logForm:{display:'grid',gap:10},input:{border:'1px solid #cbd5e1',borderRadius:12,padding:'10px 12px',background:'#fff'},textarea:{minHeight:84,border:'1px solid #cbd5e1',borderRadius:12,padding:12,fontFamily:'Arial, Helvetica, sans-serif',resize:'vertical'},history:{display:'grid',gap:10},logItem:{background:'#fff',border:'1px solid #e2e8f0',borderRadius:14,padding:12},logText:{margin:'8px 0 0',color:'#475569',lineHeight:1.45},workflowGrid:{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(300px,1fr))',gap:18,marginTop:20},queuePanel:{border:'1px solid #e2e8f0',borderRadius:18,padding:18,background:'#f8fafc'},queueItem:{background:'#fff',border:'1px solid #e2e8f0',borderRadius:14,padding:14,marginBottom:10},queueText:{margin:'10px 0 0',color:'#475569'}};
+createRoot(document.getElementById('root')).render(<PAWSApp/>);
