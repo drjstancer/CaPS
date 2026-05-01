@@ -5,8 +5,8 @@ function PAWSApp() {
   return (
     <main style={styles.page}>
       <section style={styles.card}>
-        <div style={styles.badge}>PAWS</div>
-        <h1 style={styles.title}>PAWS Application</h1>
+        <div style={styles.badge}>Mock System</div>
+        <h1 style={styles.title}>PAWS Program Operations Mock</h1>
         <p style={styles.text}>
           Program management and compliance tracking tools for PAWS pathway operations.
         </p>
