@@ -57,7 +57,9 @@ function buildTimeline(logs = [], followUp){
 }
 function PAWSApp(){
  const[view,setView]=useState('home');const[filter,setFilter]=useState('All');const[followUps,setFollowUps]=useState(()=>{const saved=localStorage.getItem('paws_followUps');return saved?JSON.parse(saved):initialFollowUps();});
-const[logs,setLogs]=useState(()=>{const saved=localStorage.getItem('paws_logs');return saved?JSON.parse(saved):initialLogs();});
+const[logs,setLogs]=useState(()=>{const saved=localStorage.getItem('paws_logs');return saved?JSON.parse(saved):initialLogs();}); 
+   useEffect(()=>{localStorage.setItem('paws_logs',JSON.stringify(logs));},[logs]);
+ useEffect(()=>{localStorage.setItem('paws_followUps',JSON.stringify(followUps));},[followUps]);
  const students=useMemo(()=>baseStudents.map(s=>({...s,flags:flags(s),status:status(s)})),[]);
  const visible=filter==='All'?students:students.filter(s=>s.status===filter);
  const allLogs=Object.values(logs).flat();const totalFlagged=Object.values(followUps).filter(f=>f?.flaggedDate).length;const resolved=allLogs.filter(l=>l.outcome==='Issue Resolved').length;
