@@ -20,7 +20,35 @@ function initialFollowUps(){return{'12033845':{active:true,flaggedDate:nowIso()}
 function riskLevel(s,logs=[],followUp){const unresolved=logs.filter(l=>['No Response','Escalated'].includes(l.outcome)).length;const resolved=logs.some(l=>l.outcome==='Issue Resolved');const score=s.flags.length+unresolved+(followUp?.active?1:0)+(logs.length>=2&&!resolved?1:0);if(score>=3)return'High Repeat Risk';if(score>=2)return'Repeat Watch';return'Lower Risk'}
 function advisorStats(students,logs,followUps){const map={};students.forEach(s=>{const a=s.advisor;const items=logs[s.muId]||[];if(!map[a])map[a]={advisor:a,caseload:0,active:0,interventions:0,resolved:0,escalated:0,repeatRisk:0};map[a].caseload++;if(followUps[s.muId]?.active)map[a].active++;map[a].interventions+=items.length;map[a].resolved+=items.filter(l=>l.outcome==='Issue Resolved').length;map[a].escalated+=items.filter(l=>l.outcome==='Escalated').length;if(riskLevel(s,items,followUps[s.muId])!=='Lower Risk')map[a].repeatRisk++});return Object.values(map).map(a=>({...a,effectiveness:a.interventions?Math.round((a.resolved/a.interventions)*100):0}))}
 function interventionEffectiveness(logs){const map={};Object.values(logs).flat().forEach(l=>{const t=l.type||'Uncategorized';if(!map[t])map[t]={type:t,total:0,resolved:0,escalated:0,noResponse:0,met:0};map[t].total++;if(l.outcome==='Issue Resolved')map[t].resolved++;if(l.outcome==='Escalated')map[t].escalated++;if(l.outcome==='No Response')map[t].noResponse++;if(l.outcome==='Met with Student')map[t].met++});return Object.values(map).map(t=>({...t,effectiveness:t.total?Math.round((t.resolved/t.total)*100):0}))}
+function buildTimeline(logs = [], followUp){
+  const events = [];
 
+  if(followUp?.flaggedDate){
+    events.push({
+      type: 'Flagged',
+      date: followUp.flaggedDate,
+      label: 'Student Flagged for Follow-Up'
+    });
+  }
+
+  logs.forEach(l => {
+    events.push({
+      type: 'Intervention',
+      date: new Date(l.date),
+      label: `${l.type} (${l.outcome})`
+    });
+  });
+
+  if(followUp?.resolvedDate){
+    events.push({
+      type: 'Resolved',
+      date: followUp.resolvedDate,
+      label: 'Issue Resolved'
+    });
+  }
+
+  return events.sort((a,b)=> new Date(a.date) - new Date(b.date));
+}
 function PAWSApp(){
  const[view,setView]=useState('home');const[filter,setFilter]=useState('All');const[followUps,setFollowUps]=useState(initialFollowUps());const[logs,setLogs]=useState(initialLogs());
  const students=useMemo(()=>baseStudents.map(s=>({...s,flags:flags(s),status:status(s)})),[]);
