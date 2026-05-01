@@ -1,27 +1,47 @@
 import React, { useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 
-const students = [
-  { name: 'Jordan Ellis', muId: '12890431', track: 'JPAWS', classification: 'Freshman', advising: true, attendance: 92, shadowing: false, retreat: false, gpa: 3.72, ruca: 2, status: 'On Track', notes: 'Strong attendance and advising engagement. Shadowing not required yet for current classification.', nextStep: 'Continue fall advising cadence and confirm sophomore shadowing readiness timeline.' },
-  { name: 'Maya Brooks', muId: '12944780', track: 'JPAWS', classification: 'Sophomore', advising: true, attendance: 84, shadowing: true, retreat: false, gpa: 3.48, ruca: 6, status: 'Watch', notes: 'Shadowing is active, but attendance dipped below ideal PAWS engagement target.', nextStep: 'Schedule check-in and review barriers to program attendance.' },
-  { name: 'Chris Nguyen', muId: '12483019', track: 'PAWS Achievers', classification: 'Junior', advising: true, attendance: 96, shadowing: true, retreat: true, gpa: 3.81, ruca: 1, status: 'On Track', notes: 'High engagement across requirements. Strong academic standing.', nextStep: 'Maintain documentation and prepare for next milestone review.' },
-  { name: 'Amara Johnson', muId: '12033845', track: 'PAWS Pre-Admissions', classification: 'Senior', advising: false, attendance: 76, shadowing: true, retreat: true, gpa: 3.34, ruca: 8, status: 'Needs Follow-Up', notes: 'Advising requirement is incomplete and attendance is below target. Needs immediate outreach.', nextStep: 'Send advising appointment reminder and flag for staff follow-up.' },
-  { name: 'Elijah Carter', muId: '11877205', track: 'PAWS Scholars', classification: 'M1', advising: true, attendance: 88, shadowing: true, retreat: true, gpa: 3.67, ruca: 3, status: 'On Track', notes: 'Medical student mentor profile is active. Engagement remains stable.', nextStep: 'Confirm availability for upcoming pathway student panel.' },
+const baseStudents = [
+  { name: 'Jordan Ellis', muId: '12890431', track: 'JPAWS', classification: 'Freshman', advising: true, attendance: 92, shadowing: false, retreat: false, gpa: 3.72, ruca: 2, notes: 'Strong attendance and advising engagement. Shadowing not required yet for current classification.', nextStep: 'Continue fall advising cadence and confirm sophomore shadowing readiness timeline.' },
+  { name: 'Maya Brooks', muId: '12944780', track: 'JPAWS', classification: 'Sophomore', advising: true, attendance: 84, shadowing: true, retreat: false, gpa: 3.48, ruca: 6, notes: 'Shadowing is active, but attendance dipped below ideal PAWS engagement target.', nextStep: 'Schedule check-in and review barriers to program attendance.' },
+  { name: 'Chris Nguyen', muId: '12483019', track: 'PAWS Achievers', classification: 'Junior', advising: true, attendance: 96, shadowing: true, retreat: true, gpa: 3.81, ruca: 1, notes: 'High engagement across requirements. Strong academic standing.', nextStep: 'Maintain documentation and prepare for next milestone review.' },
+  { name: 'Amara Johnson', muId: '12033845', track: 'PAWS Pre-Admissions', classification: 'Senior', advising: false, attendance: 76, shadowing: true, retreat: true, gpa: 3.34, ruca: 8, notes: 'Advising requirement is incomplete and attendance is below target. Needs immediate outreach.', nextStep: 'Send advising appointment reminder and flag for staff follow-up.' },
+  { name: 'Elijah Carter', muId: '11877205', track: 'PAWS Scholars', classification: 'M1', advising: true, attendance: 88, shadowing: true, retreat: true, gpa: 3.67, ruca: 3, notes: 'Medical student mentor profile is active. Engagement remains stable.', nextStep: 'Confirm availability for upcoming pathway student panel.' },
 ];
 
 const reqs = ['Advising', 'Attendance', 'Shadowing/Vetting', 'Retreat', 'Academic Standing'];
 
+function deriveFlags(s) {
+  const flags = [];
+  if (!s.advising) flags.push('Missing advising requirement');
+  if (s.attendance < 80) flags.push('Attendance below 80%');
+  if (s.gpa < 3.3) flags.push('GPA below 3.30');
+  if ((s.classification === 'Sophomore' || s.classification === 'Junior' || s.classification === 'Senior') && !s.shadowing) flags.push('Shadowing/vetting not documented');
+  if ((s.classification === 'Junior' || s.classification === 'Senior') && !s.retreat) flags.push('Retreat requirement incomplete');
+  return flags;
+}
+
+function deriveStatus(s) {
+  const flags = deriveFlags(s);
+  if (flags.some(f => f.includes('Missing advising') || f.includes('below 80%'))) return 'Needs Follow-Up';
+  if (flags.length > 0 || s.attendance < 88 || s.gpa < 3.5) return 'Watch';
+  return 'On Track';
+}
+
 function PAWSApp() {
   const [view, setView] = useState('home');
   const [filter, setFilter] = useState('All');
+  const [followUps, setFollowUps] = useState({});
+  const students = useMemo(() => baseStudents.map(s => ({ ...s, flags: deriveFlags(s), status: deriveStatus(s) })), []);
   const visible = filter === 'All' ? students : students.filter(s => s.status === filter);
   const metrics = useMemo(() => {
     const onTrack = students.filter(s => s.status === 'On Track').length;
     const needs = students.filter(s => s.status !== 'On Track').length;
     const avgAttendance = Math.round(students.reduce((sum, s) => sum + s.attendance, 0) / students.length);
     const shadowReady = students.filter(s => s.shadowing).length;
-    return { onTrack, needs, avgAttendance, shadowReady };
-  }, []);
+    const flagged = Object.values(followUps).filter(Boolean).length;
+    return { onTrack, needs, avgAttendance, shadowReady, flagged };
+  }, [students, followUps]);
 
   return (
     <main style={styles.page}>
@@ -39,23 +59,27 @@ function PAWSApp() {
           <div style={styles.grid}>
             <button style={styles.tileButton} onClick={() => setView('dashboard')}>
               <h2 style={styles.tileTitle}>Compliance Dashboard</h2>
-              <p style={styles.tileText}>Track requirements, status, and student progress.</p>
+              <p style={styles.tileText}>Track requirements, auto-flags, follow-ups, and student progress.</p>
               <span style={styles.open}>Open module →</span>
             </button>
             <div style={styles.tile}><h2 style={styles.tileTitle}>Student Records</h2><p style={styles.tileText}>Manage pathway participation and advising data. Coming next.</p></div>
             <div style={styles.tile}><h2 style={styles.tileTitle}>Reports</h2><p style={styles.tileText}>Prepare exports and summaries for program review. Coming next.</p></div>
           </div>
         ) : (
-          <Dashboard filter={filter} setFilter={setFilter} visible={visible} metrics={metrics} onBack={() => setView('home')} />
+          <Dashboard students={students} filter={filter} setFilter={setFilter} visible={visible} metrics={metrics} followUps={followUps} setFollowUps={setFollowUps} onBack={() => setView('home')} />
         )}
       </section>
     </main>
   );
 }
 
-function Dashboard({ filter, setFilter, visible, metrics, onBack }) {
+function Dashboard({ filter, setFilter, visible, metrics, followUps, setFollowUps, onBack }) {
   const [selected, setSelected] = useState(null);
   const activeStudent = selected && visible.some(s => s.name === selected.name) ? selected : null;
+
+  function toggleFollowUp(student) {
+    setFollowUps(prev => ({ ...prev, [student.muId]: !prev[student.muId] }));
+  }
 
   return (
     <div>
@@ -63,7 +87,7 @@ function Dashboard({ filter, setFilter, visible, metrics, onBack }) {
       <div style={styles.dashboardHeader}>
         <div>
           <h2 style={styles.sectionTitle}>Compliance Dashboard</h2>
-          <p style={styles.smallText}>Mock data for station testing. This is not connected to live student records yet.</p>
+          <p style={styles.smallText}>Mock data with auto-flagging rules and local follow-up tracking.</p>
         </div>
         <select value={filter} onChange={e => { setFilter(e.target.value); setSelected(null); }} style={styles.select}>
           {['All', 'On Track', 'Watch', 'Needs Follow-Up'].map(v => <option key={v}>{v}</option>)}
@@ -75,6 +99,11 @@ function Dashboard({ filter, setFilter, visible, metrics, onBack }) {
         <Metric label="Needs Attention" value={metrics.needs} />
         <Metric label="Avg Attendance" value={`${metrics.avgAttendance}%`} />
         <Metric label="Shadow Ready" value={metrics.shadowReady} />
+        <Metric label="Flagged Follow-Ups" value={metrics.flagged} />
+      </div>
+
+      <div style={styles.rulePanel}>
+        <strong>Auto-flag rules:</strong> Missing advising or attendance below 80% = Needs Follow-Up. GPA below 3.30, incomplete requirements, attendance below 88%, or GPA below 3.50 = Watch.
       </div>
 
       <div style={styles.requirementPanel}>
@@ -85,15 +114,15 @@ function Dashboard({ filter, setFilter, visible, metrics, onBack }) {
       <div style={styles.dashboardGrid}>
         <div style={styles.tableWrap}>
           <table style={styles.table}>
-            <thead><tr>{['Student', 'Track', 'Class', 'Attendance', 'GPA', 'Status'].map(h => <th key={h} style={styles.th}>{h}</th>)}</tr></thead>
+            <thead><tr>{['Student', 'Track', 'Class', 'Flags', 'Follow-Up', 'Status'].map(h => <th key={h} style={styles.th}>{h}</th>)}</tr></thead>
             <tbody>
               {visible.map(s => (
                 <tr key={s.name} onClick={() => setSelected(s)} style={{...styles.row, ...(activeStudent?.name === s.name ? styles.activeRow : {})}}>
                   <td style={styles.td}><strong>{s.name}</strong><div style={styles.subCell}>MU ID {s.muId}</div></td>
                   <td style={styles.td}>{s.track}</td>
                   <td style={styles.td}>{s.classification}</td>
-                  <td style={styles.td}>{s.attendance}%</td>
-                  <td style={styles.td}>{s.gpa}</td>
+                  <td style={styles.td}>{s.flags.length ? s.flags.length : 'None'}</td>
+                  <td style={styles.td}>{followUps[s.muId] ? <span style={styles.followBadge}>Flagged</span> : <span style={styles.muted}>—</span>}</td>
                   <td style={styles.td}><span style={{...styles.status, ...statusStyle(s.status)}}>{s.status}</span></td>
                 </tr>
               ))}
@@ -101,20 +130,15 @@ function Dashboard({ filter, setFilter, visible, metrics, onBack }) {
           </table>
         </div>
 
-        <StudentDetail student={activeStudent} />
+        <StudentDetail student={activeStudent} isFlagged={activeStudent ? !!followUps[activeStudent.muId] : false} onToggleFollowUp={toggleFollowUp} />
       </div>
     </div>
   );
 }
 
-function StudentDetail({ student }) {
+function StudentDetail({ student, isFlagged, onToggleFollowUp }) {
   if (!student) {
-    return (
-      <aside style={styles.detailPanel}>
-        <h3 style={styles.panelTitle}>Student Detail</h3>
-        <p style={styles.tileText}>Select a student row to open their compliance profile.</p>
-      </aside>
-    );
+    return <aside style={styles.detailPanel}><h3 style={styles.panelTitle}>Student Detail</h3><p style={styles.tileText}>Select a student row to open their compliance profile.</p></aside>;
   }
 
   const checklist = [
@@ -128,12 +152,13 @@ function StudentDetail({ student }) {
   return (
     <aside style={styles.detailPanel}>
       <div style={styles.detailHeader}>
-        <div>
-          <h3 style={styles.detailName}>{student.name}</h3>
-          <p style={styles.detailMeta}>{student.track} • {student.classification}</p>
-        </div>
+        <div><h3 style={styles.detailName}>{student.name}</h3><p style={styles.detailMeta}>{student.track} • {student.classification}</p></div>
         <span style={{...styles.status, ...statusStyle(student.status)}}>{student.status}</span>
       </div>
+
+      <button style={isFlagged ? styles.unflagButton : styles.flagButton} onClick={() => onToggleFollowUp(student)}>
+        {isFlagged ? 'Remove Follow-Up Flag' : 'Flag for Follow-Up'}
+      </button>
 
       <div style={styles.detailStats}>
         <Mini label="MU ID" value={student.muId} />
@@ -142,33 +167,23 @@ function StudentDetail({ student }) {
         <Mini label="Attendance" value={`${student.attendance}%`} />
       </div>
 
+      <h4 style={styles.detailSectionTitle}>Auto-Flags</h4>
+      {student.flags.length ? <div style={styles.flagList}>{student.flags.map(f => <span key={f} style={styles.autoFlag}>{f}</span>)}</div> : <p style={styles.goodBox}>No auto-flags detected.</p>}
+
       <h4 style={styles.detailSectionTitle}>Compliance Checklist</h4>
-      <div style={styles.checkList}>
-        {checklist.map(([label, done]) => (
-          <div key={label} style={styles.checkItem}>
-            <span style={{...styles.checkDot, background: done ? '#22c55e' : '#ef4444'}}>{done ? '✓' : '!'}</span>
-            <span>{label}</span>
-          </div>
-        ))}
-      </div>
+      <div style={styles.checkList}>{checklist.map(([label, done]) => <div key={label} style={styles.checkItem}><span style={{...styles.checkDot, background: done ? '#22c55e' : '#ef4444'}}>{done ? '✓' : '!'}</span><span>{label}</span></div>)}</div>
 
       <h4 style={styles.detailSectionTitle}>Staff Notes</h4>
       <p style={styles.noteBox}>{student.notes}</p>
 
       <h4 style={styles.detailSectionTitle}>Recommended Next Step</h4>
-      <p style={styles.nextStep}>{student.nextStep}</p>
+      <p style={styles.nextStep}>{isFlagged ? 'Follow-up flag is active. Document outreach after contact is made.' : student.nextStep}</p>
     </aside>
   );
 }
 
-function Mini({ label, value }) {
-  return <div style={styles.mini}><div style={styles.miniLabel}>{label}</div><div style={styles.miniValue}>{value}</div></div>;
-}
-
-function Metric({ label, value }) {
-  return <div style={styles.metric}><div style={styles.metricValue}>{value}</div><div style={styles.metricLabel}>{label}</div></div>;
-}
-
+function Mini({ label, value }) { return <div style={styles.mini}><div style={styles.miniLabel}>{label}</div><div style={styles.miniValue}>{value}</div></div>; }
+function Metric({ label, value }) { return <div style={styles.metric}><div style={styles.metricValue}>{value}</div><div style={styles.metricLabel}>{label}</div></div>; }
 function statusStyle(status) {
   if (status === 'On Track') return { background: '#dcfce7', color: '#166534' };
   if (status === 'Watch') return { background: '#fef9c3', color: '#854d0e' };
@@ -194,32 +209,40 @@ const styles = {
   sectionTitle: { margin: 0, fontSize: '1.8rem', color: '#0f172a' },
   smallText: { margin: '8px 0 0', color: '#64748b' },
   select: { border: '1px solid #cbd5e1', borderRadius: 12, padding: '10px 12px', background: '#fff' },
-  metricGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 14, margin: '24px 0' },
+  metricGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(145px, 1fr))', gap: 14, margin: '24px 0' },
   metric: { background: '#0f172a', color: '#fff', borderRadius: 18, padding: 18 },
   metricValue: { fontSize: '2rem', fontWeight: 900 },
   metricLabel: { color: '#cbd5e1', fontSize: '.9rem' },
+  rulePanel: { background: '#fff3d6', border: '1px solid #FDB719', borderRadius: 16, padding: 14, marginBottom: 16, color: '#3f2f00', lineHeight: 1.45 },
   requirementPanel: { border: '1px solid #e2e8f0', borderRadius: 18, padding: 18, marginBottom: 18, background: '#f8fafc' },
   panelTitle: { margin: '0 0 12px', color: '#0f172a' },
   reqGrid: { display: 'flex', flexWrap: 'wrap', gap: 10 },
   reqPill: { background: '#fff3d6', border: '1px solid #FDB719', borderRadius: 999, padding: '8px 10px', fontWeight: 700 },
   dashboardGrid: { display: 'grid', gridTemplateColumns: 'minmax(0, 1.55fr) minmax(300px, .85fr)', gap: 18, alignItems: 'start' },
   tableWrap: { overflowX: 'auto', border: '1px solid #e2e8f0', borderRadius: 18 },
-  table: { width: '100%', borderCollapse: 'collapse', minWidth: 720 },
+  table: { width: '100%', borderCollapse: 'collapse', minWidth: 760 },
   th: { textAlign: 'left', padding: 14, background: '#f1f5f9', color: '#334155', fontSize: '.85rem', textTransform: 'uppercase', letterSpacing: '.06em' },
   td: { padding: 14, borderTop: '1px solid #e2e8f0', color: '#0f172a' },
   row: { cursor: 'pointer' },
   activeRow: { background: '#fff7df' },
   subCell: { color: '#64748b', fontSize: '.78rem', marginTop: 3 },
+  muted: { color: '#94a3b8' },
+  followBadge: { background: '#dbeafe', color: '#1d4ed8', borderRadius: 999, padding: '6px 10px', fontWeight: 800, fontSize: '.82rem' },
   status: { borderRadius: 999, padding: '6px 10px', fontWeight: 800, fontSize: '.82rem', whiteSpace: 'nowrap' },
   detailPanel: { border: '1px solid #e2e8f0', borderRadius: 18, padding: 18, background: '#f8fafc', minHeight: 240 },
   detailHeader: { display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'flex-start' },
   detailName: { margin: 0, color: '#0f172a', fontSize: '1.35rem' },
   detailMeta: { margin: '6px 0 0', color: '#64748b' },
+  flagButton: { width: '100%', border: 0, borderRadius: 14, padding: 12, margin: '16px 0 0', background: '#0f172a', color: '#fff', fontWeight: 900, cursor: 'pointer' },
+  unflagButton: { width: '100%', border: 0, borderRadius: 14, padding: 12, margin: '16px 0 0', background: '#dbeafe', color: '#1d4ed8', fontWeight: 900, cursor: 'pointer' },
   detailStats: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10, margin: '18px 0' },
   mini: { background: '#fff', border: '1px solid #e2e8f0', borderRadius: 14, padding: 12 },
   miniLabel: { color: '#64748b', fontSize: '.75rem', textTransform: 'uppercase', letterSpacing: '.06em' },
   miniValue: { color: '#0f172a', fontWeight: 900, marginTop: 4 },
   detailSectionTitle: { margin: '18px 0 10px', color: '#0f172a' },
+  flagList: { display: 'grid', gap: 8 },
+  autoFlag: { background: '#fee2e2', color: '#991b1b', borderRadius: 12, padding: '8px 10px', fontWeight: 800, fontSize: '.86rem' },
+  goodBox: { margin: 0, padding: 12, background: '#dcfce7', borderRadius: 14, color: '#166534', fontWeight: 800 },
   checkList: { display: 'grid', gap: 8 },
   checkItem: { display: 'flex', alignItems: 'center', gap: 10, color: '#0f172a' },
   checkDot: { width: 22, height: 22, borderRadius: '50%', display: 'grid', placeItems: 'center', color: '#fff', fontSize: '.75rem', fontWeight: 900 },
