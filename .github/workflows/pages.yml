@@ -28,12 +28,14 @@ jobs:
           cp index.html dist/index.html
           mkdir -p dist/btg
           cp btg/index.html dist/btg/index.html
+          sed -i 's|href="../"|href="../index.html"|g' dist/btg/index.html
           npm --prefix btg-ehr install
           npm --prefix btg-ehr run build -- --base=/CaPS/btg-ehr/
           cp -R btg-ehr/dist dist/btg-ehr
           npm --prefix PAWS install
           npm --prefix PAWS run build -- --base=/CaPS/PAWS/
           cp -R PAWS/dist dist/PAWS
+          find dist/PAWS/assets -type f -name "*.js" -exec sed -i 's|href:"/"|href:"../index.html"|g' {} +
           touch dist/.nojekyll
       - name: Configure Pages
         uses: actions/configure-pages@v5
