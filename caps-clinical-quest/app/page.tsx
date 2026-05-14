@@ -15,15 +15,21 @@ export default function HomePage() {
         </p>
 
         <div className="flex flex-wrap justify-center gap-4">
-          <button className="bg-cyan-400 text-slate-950 px-6 py-4 rounded-2xl font-bold hover:scale-105 transition-all">
+          <a
+            href="/login"
+            className="bg-cyan-400 text-slate-950 px-6 py-4 rounded-2xl font-bold hover:scale-105 transition-all"
+          >
             Launch Platform
-          </button>
+          </a>
 
-          <button className="border border-slate-700 bg-slate-900 px-6 py-4 rounded-2xl font-medium hover:bg-slate-800 transition-all">
+          <a
+            href="/cases"
+            className="border border-slate-700 bg-slate-900 px-6 py-4 rounded-2xl font-medium hover:bg-slate-800 transition-all"
+          >
             Explore Cases
-          </button>
+          </a>
         </div>
       </div>
     </main>
-  )
+  );
 }
