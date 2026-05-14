@@ -13,6 +13,9 @@ import {
   LogOut,
   Plus,
   X,
+  Trash2,
+  Pencil,
+  TrendingUp,
 } from 'lucide-react';
 
 type StatCard = {
@@ -147,6 +150,7 @@ export default function ClinicalQuestDashboard() {
   const [newCaseTitle, setNewCaseTitle] = useState<string>('');
   const [newCaseTrack, setNewCaseTrack] = useState<string>('Emergency Care');
   const [newCaseDifficulty, setNewCaseDifficulty] = useState<string>('Beginner');
+  const [editingCase, setEditingCase] = useState<string | null>(null);
 
   useEffect(() => {
     assertDashboardData();
@@ -157,6 +161,10 @@ export default function ClinicalQuestDashboard() {
       setUserEmail(storedEmail);
     }
   }, []);
+
+  function handleDeleteCase(title: string): void {
+    setSavedCases(savedCases.filter((item) => item.title !== title));
+  }
 
   function handleCreateCase(): void {
     if (!newCaseTitle.trim()) return;
@@ -381,6 +389,7 @@ export default function ClinicalQuestDashboard() {
                         type="button"
                         className="px-5 py-3 rounded-2xl bg-cyan-400 text-slate-950 font-bold hover:scale-105 transition-all duration-300"
                       >
+                        <Pencil className="inline mr-2" size={16} />
                         Edit Case
                       </button>
 
@@ -388,7 +397,17 @@ export default function ClinicalQuestDashboard() {
                         type="button"
                         className="px-5 py-3 rounded-2xl border border-white/10 hover:border-white/20 bg-white/[0.03] transition-all duration-300"
                       >
+                        <TrendingUp className="inline mr-2" size={16} />
                         View Analytics
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteCase(item.title)}
+                        className="px-5 py-3 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-300 hover:bg-red-500 hover:text-white transition-all duration-300"
+                      >
+                        <Trash2 className="inline mr-2" size={16} />
+                        Delete
                       </button>
                     </div>
                   </div>
@@ -429,6 +448,34 @@ export default function ClinicalQuestDashboard() {
                   ))}
                 </div>
               </div>
+              <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-slate-900 to-slate-950 p-8">
+                <p className="uppercase tracking-[0.3em] text-cyan-400 text-xs mb-3">
+                  Investigation Insights
+                </p>
+
+                <h3 className="text-3xl font-black mb-8">
+                  Performance Trends
+                </h3>
+
+                <div className="space-y-5">
+                  {[72, 88, 64, 91, 76].map((value, index) => (
+                    <div key={index}>
+                      <div className="flex items-center justify-between mb-2 text-sm text-slate-400">
+                        <span>Week {index + 1}</span>
+                        <span>{value}%</span>
+                      </div>
+
+                      <div className="h-4 rounded-full bg-white/5 overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-blue-500"
+                          style={{ width: `${value}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-slate-900 to-slate-950 p-8">
                 <p className="uppercase tracking-[0.3em] text-cyan-400 text-xs mb-3">
                   Student Engagement
