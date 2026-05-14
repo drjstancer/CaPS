@@ -143,6 +143,10 @@ export default function ClinicalQuestDashboard() {
   const [userEmail, setUserEmail] = useState<string>('faculty@missouri.edu');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
+  const [savedCases, setSavedCases] = useState<CaseSummary[]>(cases);
+  const [newCaseTitle, setNewCaseTitle] = useState<string>('');
+  const [newCaseTrack, setNewCaseTrack] = useState<string>('Emergency Care');
+  const [newCaseDifficulty, setNewCaseDifficulty] = useState<string>('Beginner');
 
   useEffect(() => {
     assertDashboardData();
@@ -154,7 +158,24 @@ export default function ClinicalQuestDashboard() {
     }
   }, []);
 
-  const filteredCases = cases.filter((item) =>
+  function handleCreateCase(): void {
+    if (!newCaseTitle.trim()) return;
+
+    const createdCase: CaseSummary = {
+      title: newCaseTitle,
+      track: newCaseTrack,
+      difficulty: newCaseDifficulty,
+      attempts: 0,
+    };
+
+    setSavedCases([createdCase, ...savedCases]);
+    setNewCaseTitle('');
+    setNewCaseTrack('Emergency Care');
+    setNewCaseDifficulty('Beginner');
+    setShowCreateModal(false);
+  }
+
+  const filteredCases = savedCases.filter((item) =>
     item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     item.track.toLowerCase().includes(searchTerm.toLowerCase()),
   );
@@ -250,7 +271,6 @@ export default function ClinicalQuestDashboard() {
 
             <div className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse" />
           </div>
-
           <div className="relative overflow-hidden rounded-[2rem] border border-cyan-500/20 bg-gradient-to-br from-slate-900 via-slate-950 to-cyan-950/40 p-10 mb-10 shadow-2xl shadow-cyan-500/10">
             <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-400/10 blur-3xl rounded-full" />
 
@@ -501,14 +521,30 @@ export default function ClinicalQuestDashboard() {
               <input
                 type="text"
                 placeholder="Case Title"
+                value={newCaseTitle}
+                onChange={(e) => setNewCaseTitle(e.target.value)}
                 className="rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400"
               />
 
-              <select className="rounded-2xl border border-white/10 bg-slate-900 px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400">
+              <select
+                value={newCaseTrack}
+                onChange={(e) => setNewCaseTrack(e.target.value)}
+                className="rounded-2xl border border-white/10 bg-slate-900 px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400"
+              >
                 <option>Emergency Care</option>
                 <option>Diagnostics</option>
                 <option>Surgery</option>
                 <option>Rehabilitation</option>
+              </select>
+
+              <select
+                value={newCaseDifficulty}
+                onChange={(e) => setNewCaseDifficulty(e.target.value)}
+                className="rounded-2xl border border-white/10 bg-slate-900 px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400"
+              >
+                <option>Beginner</option>
+                <option>Intermediate</option>
+                <option>Advanced</option>
               </select>
 
               <textarea
@@ -531,6 +567,14 @@ export default function ClinicalQuestDashboard() {
                   className="px-6 py-4 rounded-2xl bg-cyan-400 text-slate-950 font-black hover:scale-105 transition-all duration-300"
                 >
                   Save Investigation
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleCreateCase}
+                  className="px-6 py-4 rounded-2xl bg-emerald-400 text-slate-950 font-black hover:scale-105 transition-all duration-300"
+                >
+                  Publish Case
                 </button>
               </div>
             </div>
