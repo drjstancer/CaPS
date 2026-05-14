@@ -10,7 +10,6 @@ import {
   Stethoscope,
   LogOut,
   Plus,
-  type LucideIcon,
 } from 'lucide-react';
 
 type StatCard = {
@@ -28,7 +27,7 @@ type CaseSummary = {
 
 type NavItem = {
   name: string;
-  icon: LucideIcon;
+  icon: any;
 };
 
 const stats: StatCard[] = [
