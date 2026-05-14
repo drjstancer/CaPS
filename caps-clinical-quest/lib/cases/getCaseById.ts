@@ -13,5 +13,12 @@ export async function getCaseById(id: string) {
     return null;
   }
 
-  return data as CaseSummary;
+  const normalized = {
+    ...(data as CaseSummary),
+    description:
+      (data as CaseSummary).description ||
+      (data as CaseSummary).scenario,
+  };
+
+  return normalized;
 }
