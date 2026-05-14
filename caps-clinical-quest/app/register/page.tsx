@@ -1,39 +1,27 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase/client'
 
-export default function LoginPage() {
-  const router = useRouter()
-
+export default function RegisterPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState('')
 
- async function handleLogin(e: React.FormEvent) {
-  e.preventDefault()
+  async function handleRegister(e: React.FormEvent) {
+    e.preventDefault()
 
-  console.log('LOGIN STARTED')
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+    })
 
-  const result = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  })
-
-  console.log(result)
-
-  if (result.error) {
-    console.log('LOGIN ERROR')
-    console.log(result.error)
-
-    setMessage(result.error.message)
-  } else {
-    console.log('LOGIN SUCCESS')
-
-    router.push('/dashboard')
+    if (error) {
+      setMessage(error.message)
+    } else {
+      setMessage('Account created successfully! Check your email.')
+    }
   }
-}
 
   return (
     <main className="min-h-screen bg-slate-950 text-white flex items-center justify-center p-8">
@@ -43,14 +31,14 @@ export default function LoginPage() {
         </p>
 
         <h1 className="text-4xl font-black text-center mb-2">
-          Welcome Back
+          Create Account
         </h1>
 
         <p className="text-slate-400 text-center mb-8">
-          Sign in to continue your healthcare journey.
+          Begin your healthcare exploration journey.
         </p>
 
-        <form onSubmit={handleLogin} className="space-y-5">
+        <form onSubmit={handleRegister} className="space-y-5">
           <input
             type="email"
             placeholder="Email Address"
@@ -71,12 +59,12 @@ export default function LoginPage() {
             type="submit"
             className="w-full bg-cyan-400 text-slate-950 font-bold py-4 rounded-2xl"
           >
-            Sign In
+            Create Account
           </button>
         </form>
 
         {message && (
-          <p className="mt-6 text-center text-sm text-red-400">
+          <p className="mt-6 text-center text-sm text-cyan-300">
             {message}
           </p>
         )}
