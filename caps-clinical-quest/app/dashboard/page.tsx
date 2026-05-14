@@ -34,6 +34,21 @@ type NavItem = {
   href: string;
 };
 
+type Profession = {
+  id: number;
+  name: string;
+  cases: number;
+  students: number;
+  growth: string;
+};
+
+type ActivityItem = {
+  id: number;
+  action: string;
+  timestamp: string;
+  user: string;
+};
+
 const initialCases: CaseSummary[] = [
   {
     id: 1,
@@ -77,6 +92,18 @@ const recentStudents = [
   { name: 'Jordan Ellis', profession: 'Emergency Medicine', score: '91%' },
   { name: 'Amaya Brooks', profession: 'Neurology', score: '87%' },
   { name: 'Marcus Reed', profession: 'Orthopedic Surgery', score: '94%' },
+];
+
+const professions: Profession[] = [
+  { id: 1, name: 'Emergency Medicine', cases: 8, students: 124, growth: '+12%' },
+  { id: 2, name: 'Neurology', cases: 5, students: 77, growth: '+8%' },
+  { id: 3, name: 'Orthopedic Surgery', cases: 6, students: 91, growth: '+17%' },
+];
+
+const activityFeed: ActivityItem[] = [
+  { id: 1, action: 'New investigation published', timestamp: '12 minutes ago', user: 'Dr. J Stancer' },
+  { id: 2, action: 'Analytics report exported', timestamp: '1 hour ago', user: 'Faculty Admin' },
+  { id: 3, action: 'Student completed Neurology case', timestamp: '2 hours ago', user: 'Jordan Ellis' },
 ];
 
 const trendData = [72, 88, 64, 91, 76];
@@ -154,7 +181,6 @@ export default function ClinicalQuestDashboard() {
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
-
               return (
                 <Link
                   href={item.href}
@@ -344,6 +370,47 @@ export default function ClinicalQuestDashboard() {
                       <div className="h-4 rounded-full bg-white/5 overflow-hidden">
                         <div className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-blue-500" style={{ width: `${value}%` }} />
                       </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-slate-900 to-slate-950 p-8">
+                <p className="uppercase tracking-[0.3em] text-cyan-400 text-xs mb-3">Profession Analytics</p>
+                <h3 className="text-3xl font-black mb-8">Healthcare Pathways</h3>
+                <div className="space-y-5">
+                  {professions.map((profession) => (
+                    <div key={profession.id} className="rounded-3xl border border-white/10 bg-white/[0.03] p-5">
+                      <div className="flex items-center justify-between mb-3">
+                        <h4 className="font-bold text-lg text-white">{profession.name}</h4>
+                        <span className="text-emerald-300 font-black">{profession.growth}</span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <p className="text-slate-500 uppercase tracking-wide mb-1">Cases</p>
+                          <p className="text-cyan-300 font-bold text-xl">{profession.cases}</p>
+                        </div>
+                        <div>
+                          <p className="text-slate-500 uppercase tracking-wide mb-1">Students</p>
+                          <p className="text-cyan-300 font-bold text-xl">{profession.students}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-slate-900 to-slate-950 p-8">
+                <p className="uppercase tracking-[0.3em] text-cyan-400 text-xs mb-3">System Activity</p>
+                <h3 className="text-3xl font-black mb-8">Live Feed</h3>
+                <div className="space-y-4">
+                  {activityFeed.map((activity) => (
+                    <div key={activity.id} className="border border-white/10 rounded-2xl p-4 bg-white/[0.03]">
+                      <div className="flex items-center justify-between mb-2 gap-3">
+                        <p className="font-semibold text-white text-sm">{activity.action}</p>
+                        <span className="text-xs text-cyan-300 whitespace-nowrap">{activity.timestamp}</span>
+                      </div>
+                      <p className="text-xs text-slate-500">{activity.user}</p>
                     </div>
                   ))}
                 </div>
