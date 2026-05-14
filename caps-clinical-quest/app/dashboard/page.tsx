@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 import {
   LayoutDashboard,
   FileText,
@@ -28,6 +29,7 @@ type CaseSummary = {
 type NavItem = {
   name: string;
   icon: any;
+  href: string;
 };
 
 const stats: StatCard[] = [
@@ -78,26 +80,32 @@ const navItems: NavItem[] = [
   {
     name: 'Dashboard',
     icon: LayoutDashboard,
+    href: '/dashboard',
   },
   {
     name: 'Cases',
     icon: FileText,
+    href: '/dashboard/cases',
   },
   {
     name: 'Professions',
     icon: Stethoscope,
+    href: '/dashboard/professions',
   },
   {
     name: 'Students',
     icon: Users,
+    href: '/dashboard/students',
   },
   {
     name: 'Analytics',
     icon: BarChart3,
+    href: '/dashboard/analytics',
   },
   {
     name: 'Settings',
     icon: Shield,
+    href: '/dashboard/settings',
   },
 ];
 
@@ -151,9 +159,9 @@ export default function ClinicalQuestDashboard() {
               const isActive = item.name === 'Dashboard';
 
               return (
-                <button
+                <Link
+                  href={item.href}
                   key={item.name}
-                  type="button"
                   className={`w-full flex items-center gap-4 text-left px-5 py-4 rounded-2xl transition-all duration-300 ${
                     isActive
                       ? 'bg-cyan-400 text-slate-950 font-bold shadow-lg shadow-cyan-500/20'
@@ -162,7 +170,7 @@ export default function ClinicalQuestDashboard() {
                 >
                   <Icon size={20} />
                   {item.name}
-                </button>
+                </Link>
               );
             })}
           </nav>
