@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
   FileText,
@@ -137,6 +138,7 @@ function assertDashboardData(): void {
 }
 
 export default function ClinicalQuestDashboard() {
+  const pathname = usePathname();
   const [userEmail, setUserEmail] = useState<string>('faculty@missouri.edu');
   const [searchTerm, setSearchTerm] = useState<string>('');
 
@@ -180,7 +182,7 @@ export default function ClinicalQuestDashboard() {
           <nav className="space-y-3 flex-1">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isActive = item.name === 'Dashboard';
+              const isActive = pathname === item.href;
 
               return (
                 <Link
@@ -234,6 +236,19 @@ export default function ClinicalQuestDashboard() {
         </aside>
 
         <section className="flex-1 px-6 py-8 md:px-10 lg:px-14">
+          <div className="lg:hidden flex items-center justify-between mb-6 rounded-3xl border border-white/10 bg-slate-950/70 backdrop-blur-xl p-5">
+            <div>
+              <p className="uppercase tracking-[0.3em] text-cyan-400 text-xs mb-1">
+                Clinical Quest
+              </p>
+              <h2 className="text-2xl font-black">
+                Faculty Console
+              </h2>
+            </div>
+
+            <div className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse" />
+          </div>
+
           <div className="relative overflow-hidden rounded-[2rem] border border-cyan-500/20 bg-gradient-to-br from-slate-900 via-slate-950 to-cyan-950/40 p-10 mb-10 shadow-2xl shadow-cyan-500/10">
             <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-400/10 blur-3xl rounded-full" />
 
