@@ -55,6 +55,24 @@ const stats: StatCard[] = [
   },
 ];
 
+const recentStudents = [
+  {
+    name: 'Jordan Ellis',
+    profession: 'Emergency Medicine',
+    score: '91%',
+  },
+  {
+    name: 'Amaya Brooks',
+    profession: 'Neurology',
+    score: '87%',
+  },
+  {
+    name: 'Marcus Reed',
+    profession: 'Orthopedic Surgery',
+    score: '94%',
+  },
+];
+
 const cases: CaseSummary[] = [
   {
     title: 'The Collapse on the Court',
@@ -120,6 +138,7 @@ function assertDashboardData(): void {
 
 export default function ClinicalQuestDashboard() {
   const [userEmail, setUserEmail] = useState<string>('faculty@missouri.edu');
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
   useEffect(() => {
     assertDashboardData();
@@ -130,6 +149,11 @@ export default function ClinicalQuestDashboard() {
       setUserEmail(storedEmail);
     }
   }, []);
+
+  const filteredCases = cases.filter((item) =>
+    item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.track.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
 
   function handleSignOut(): void {
     window.localStorage.removeItem('clinicalQuestUserEmail');
@@ -252,6 +276,16 @@ export default function ClinicalQuestDashboard() {
           <div className="grid gap-8 xl:grid-cols-[1.3fr_0.7fr]">
             <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-slate-900 to-slate-950 p-8">
               <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
+                <div className="w-full mb-4">
+                  <input
+                    type="text"
+                    placeholder="Search investigations or profession tracks..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                  />
+                </div>
+
                 <div>
                   <p className="uppercase tracking-[0.3em] text-cyan-400 text-xs mb-2">
                     Investigation Management
@@ -272,7 +306,7 @@ export default function ClinicalQuestDashboard() {
               </div>
 
               <div className="space-y-5">
-                {cases.map((item) => (
+                {filteredCases.map((item) => (
                   <div
                     key={item.title}
                     className="border border-white/10 rounded-3xl p-6 bg-white/[0.03] hover:border-cyan-400/30 transition-all duration-300"
@@ -326,6 +360,39 @@ export default function ClinicalQuestDashboard() {
             </div>
 
             <div className="space-y-8">
+              <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-slate-900 to-slate-950 p-8">
+                <p className="uppercase tracking-[0.3em] text-cyan-400 text-xs mb-3">
+                  Top Student Activity
+                </p>
+
+                <h3 className="text-3xl font-black mb-8">
+                  Recent Investigators
+                </h3>
+
+                <div className="space-y-5">
+                  {recentStudents.map((student) => (
+                    <div
+                      key={student.name}
+                      className="rounded-3xl border border-white/10 bg-white/[0.03] p-5"
+                    >
+                      <div className="flex items-center justify-between gap-4 mb-2">
+                        <h4 className="font-bold text-lg">
+                          {student.name}
+                        </h4>
+
+                        <span className="text-cyan-300 font-black text-xl">
+                          {student.score}
+                        </span>
+                      </div>
+
+                      <p className="text-slate-400 text-sm">
+                        Exploring: {student.profession}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-slate-900 to-slate-950 p-8">
                 <p className="uppercase tracking-[0.3em] text-cyan-400 text-xs mb-3">
                   Student Engagement
