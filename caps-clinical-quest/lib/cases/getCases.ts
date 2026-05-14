@@ -12,5 +12,10 @@ export async function getCases(): Promise<CaseSummary[]> {
     return [];
   }
 
-  return (data as CaseSummary[]) || [];
+  return (
+    (data as CaseSummary[]).map((item) => ({
+      ...item,
+      description: item.description || item.scenario,
+    })) || []
+  );
 }
