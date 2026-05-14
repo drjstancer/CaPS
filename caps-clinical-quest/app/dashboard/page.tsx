@@ -12,6 +12,7 @@ import {
   Stethoscope,
   LogOut,
   Plus,
+  X,
 } from 'lucide-react';
 
 type StatCard = {
@@ -141,6 +142,7 @@ export default function ClinicalQuestDashboard() {
   const pathname = usePathname();
   const [userEmail, setUserEmail] = useState<string>('faculty@missouri.edu');
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
 
   useEffect(() => {
     assertDashboardData();
@@ -300,7 +302,6 @@ export default function ClinicalQuestDashboard() {
                     className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400"
                   />
                 </div>
-
                 <div>
                   <p className="uppercase tracking-[0.3em] text-cyan-400 text-xs mb-2">
                     Investigation Management
@@ -313,6 +314,7 @@ export default function ClinicalQuestDashboard() {
 
                 <button
                   type="button"
+                  onClick={() => setShowCreateModal(true)}
                   className="px-6 py-4 rounded-2xl bg-cyan-400 text-slate-950 font-black hover:scale-105 transition-all duration-300"
                 >
                   <Plus className="inline mr-2" size={18} />
@@ -407,7 +409,6 @@ export default function ClinicalQuestDashboard() {
                   ))}
                 </div>
               </div>
-
               <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-slate-900 to-slate-950 p-8">
                 <p className="uppercase tracking-[0.3em] text-cyan-400 text-xs mb-3">
                   Student Engagement
@@ -474,6 +475,68 @@ export default function ClinicalQuestDashboard() {
           </div>
         </section>
       </div>
+      {showCreateModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-6">
+          <div className="w-full max-w-2xl rounded-[2rem] border border-cyan-400/20 bg-slate-950 p-8 shadow-2xl shadow-cyan-500/20">
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <p className="uppercase tracking-[0.3em] text-cyan-400 text-xs mb-2">
+                  Investigation Builder
+                </p>
+                <h2 className="text-4xl font-black">
+                  Create New Case
+                </h2>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setShowCreateModal(false)}
+                className="w-12 h-12 rounded-2xl bg-white/5 hover:bg-red-500 transition-all duration-300 flex items-center justify-center"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="grid gap-5">
+              <input
+                type="text"
+                placeholder="Case Title"
+                className="rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+              />
+
+              <select className="rounded-2xl border border-white/10 bg-slate-900 px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-cyan-400">
+                <option>Emergency Care</option>
+                <option>Diagnostics</option>
+                <option>Surgery</option>
+                <option>Rehabilitation</option>
+              </select>
+
+              <textarea
+                rows={5}
+                placeholder="Describe the clinical scenario..."
+                className="rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+              />
+
+              <div className="flex gap-4 justify-end mt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowCreateModal(false)}
+                  className="px-6 py-4 rounded-2xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.08] transition-all duration-300"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="button"
+                  className="px-6 py-4 rounded-2xl bg-cyan-400 text-slate-950 font-black hover:scale-105 transition-all duration-300"
+                >
+                  Save Investigation
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
