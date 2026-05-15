@@ -37,7 +37,7 @@ export default function AnalyticsPage() {
           </h1>
 
           <p className="text-slate-400 max-w-3xl text-lg leading-relaxed">
-            Monitor platform engagement, investigation completion, healthcare pathway participation, and educational performance metrics across the Clinical Quest ecosystem.
+            Monitor engagement, investigation progression, telemetry events, reflective learning behavior, and healthcare pathway participation across the Clinical Quest ecosystem.
           </p>
         </div>
 
@@ -64,6 +64,24 @@ export default function AnalyticsPage() {
             label="Completed Cases"
             value={analytics.completedInvestigations}
             description="Successfully completed healthcare investigations across all learners."
+          />
+
+          <AnalyticsMetricCard
+            label="Telemetry Events"
+            value={analytics.totalEvents}
+            description="Tracked learner interaction and investigation telemetry events."
+          />
+
+          <AnalyticsMetricCard
+            label="Reflections"
+            value={analytics.reflectionsSubmitted}
+            description="Submitted reflective learning responses across investigations."
+          />
+
+          <AnalyticsMetricCard
+            label="Clue Reveals"
+            value={analytics.clueReveals}
+            description="Evidence reveals and investigative clue progression interactions."
           />
         </div>
       </div>
