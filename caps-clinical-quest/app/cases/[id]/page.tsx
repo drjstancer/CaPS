@@ -12,11 +12,13 @@ import DiagnosisSelector from '@/components/investigation/DiagnosisSelector';
 import StepNavigator from '@/components/investigation/StepNavigator';
 import CompletionPanel from '@/components/investigation/CompletionPanel';
 import ReflectionPanel from '@/components/investigation/ReflectionPanel';
+import InvestigationTimeline from '@/components/investigation/InvestigationTimeline';
 import LoadingState from '@/components/dashboard/LoadingState';
 import ErrorState from '@/components/dashboard/ErrorState';
 import EmptyState from '@/components/dashboard/EmptyState';
 import { useCase } from '@/hooks/useCase';
 import { useClues } from '@/hooks/useClues';
+import { useDiagnosisOptions } from '@/hooks/useDiagnosisOptions';
 import { useInvestigationSession } from '@/hooks/useInvestigationSession';
 import { logEvent } from '@/lib/analytics/logEvent';
 import { saveProgress } from '@/lib/students/saveProgress';
@@ -36,6 +38,8 @@ export default function CasePage() {
 
   const { caseData, loading: caseLoading, error: caseError } = useCase(id);
   const { clues, loading: cluesLoading, error: cluesError } = useClues(numericCaseId);
+  const { options: diagnosisOptions } = useDiagnosisOptions(numericCaseId);
+
   const {
     session,
     loading: sessionLoading,
@@ -47,6 +51,12 @@ export default function CasePage() {
   const [selectedDiagnosis, setSelectedDiagnosis] = useState('');
   const [showReflection, setShowReflection] = useState(false);
   const [reflectionSubmitted, setReflectionSubmitted] = useState(false);
+  const [timelineEvents, setTimelineEvents] = useState([
+    {
+      label: 'Investigation Session Initialized',
+      timestamp: new Date().toLocaleTimeString(),
+    },
+  ]);
 
   const totalSteps = Math.max(clues.length, 1);
   const currentStep = session?.current_step || 1;
@@ -58,10 +68,22 @@ export default function CasePage() {
 
   const expectedProfession = caseData?.profession || 'Healthcare Professional';
 
+  const diagnosisLabels = diagnosisOptions.length
+    ? diagnosisOptions.map((option) => option.label)
+    : fallbackDiagnosisOptions;
+
   async function handleRevealNextClue() {
     const nextStep = Math.min(currentStep + 1, totalSteps);
 
     unlockClue(nextStep);
+
+    setTimelineEvents((prev) => [
+      ...prev,
+      {
+        label: `Evidence File ${nextStep} Revealed`,
+        timestamp: new Date().toLocaleTimeString(),
+      },
+    ]);
 
     await logEvent({
       case_id: numericCaseId,
@@ -83,6 +105,14 @@ export default function CasePage() {
     const previousStep = Math.max(currentStep - 1, 1);
     unlockClue(previousStep);
 
+    setTimelineEvents((prev) => [
+      ...prev,
+      {
+        label: `Returned to Step ${previousStep}`,
+        timestamp: new Date().toLocaleTimeString(),
+      },
+    ]);
+
     await logEvent({
       case_id: numericCaseId,
       event_type: 'step_previous',
@@ -100,6 +130,14 @@ export default function CasePage() {
     setSelectedDiagnosis(value);
     submitAnswer(value);
 
+    setTimelineEvents((prev) => [
+      ...prev,
+      {
+        label: `Diagnosis Selected: ${value}`,
+        timestamp: new Date().toLocaleTimeString(),
+      },
+    ]);
+
     await logEvent({
       case_id: numericCaseId,
       event_type: 'answer_selected',
@@ -111,10 +149,23 @@ export default function CasePage() {
 
   async function handleCompleteInvestigation() {
     const correct = selectedDiagnosis.toLowerCase() === expectedProfession.toLowerCase();
-    const score = correct ? 100 : 70;
+
+    const configuredOption = diagnosisOptions.find(
+      (option) => option.label === selectedDiagnosis,
+    );
+
+    const score = configuredOption?.points || (correct ? 100 : 70);
 
     completeInvestigation(score);
     setShowReflection(true);
+
+    setTimelineEvents((prev) => [
+      ...prev,
+      {
+        label: 'Investigation Completed',
+        timestamp: new Date().toLocaleTimeString(),
+      },
+    ]);
 
     await saveProgress({
       case_id: numericCaseId,
@@ -140,6 +191,14 @@ export default function CasePage() {
       case_id: numericCaseId,
       reflection_text: reflection,
     });
+
+    setTimelineEvents((prev) => [
+      ...prev,
+      {
+        label: 'Reflection Submitted',
+        timestamp: new Date().toLocaleTimeString(),
+      },
+    ]);
 
     await logEvent({
       case_id: numericCaseId,
@@ -210,10 +269,12 @@ export default function CasePage() {
       )}
 
       <DiagnosisSelector
-        options={fallbackDiagnosisOptions}
+        options={diagnosisLabels}
         selected={selectedDiagnosis}
         onSelect={handleDiagnosisSelect}
       />
+
+      <InvestigationTimeline events={timelineEvents} />
 
       <button
         type="button"
