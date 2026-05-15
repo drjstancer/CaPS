@@ -5,16 +5,20 @@ export interface AnalyticsOverview {
   totalProfessions: number;
   totalProgressRecords: number;
   completedInvestigations: number;
+  totalEvents: number;
+  reflectionsSubmitted: number;
+  clueReveals: number;
 }
 
 export async function getAnalyticsOverview(): Promise<AnalyticsOverview> {
-  const [casesResult, professionsResult, progressResult] = await Promise.all([
+  const [casesResult, professionsResult, progressResult, eventsResult] = await Promise.all([
     supabase.from('cases').select('*', { count: 'exact', head: true }),
     supabase.from('professions').select('*', { count: 'exact', head: true }),
     supabase.from('student_progress').select('*', {
       count: 'exact',
       head: true,
     }),
+    supabase.from('analytics_events').select('event_type'),
   ]);
 
   const completedResult = await supabase
@@ -25,10 +29,19 @@ export async function getAnalyticsOverview(): Promise<AnalyticsOverview> {
     })
     .eq('completed', true);
 
+  const events = eventsResult.data || [];
+
   return {
     totalCases: casesResult.count || 0,
     totalProfessions: professionsResult.count || 0,
     totalProgressRecords: progressResult.count || 0,
     completedInvestigations: completedResult.count || 0,
+    totalEvents: events.length,
+    reflectionsSubmitted: events.filter(
+      (event) => event.event_type === 'reflection_submitted',
+    ).length,
+    clueReveals: events.filter(
+      (event) => event.event_type === 'clue_revealed',
+    ).length,
   };
 }
