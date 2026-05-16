@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import CreateInvestigationForm from '@/components/authoring/CreateInvestigationForm';
 
 export default function AuthoringDashboardPage() {
   return (
@@ -20,68 +21,72 @@ export default function AuthoringDashboardPage() {
           </p>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
-          <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-slate-900 to-slate-950 p-8">
-            <p className="uppercase tracking-[0.3em] text-cyan-400 text-xs mb-4">
-              Investigations
-            </p>
+        <div className="grid gap-8 xl:grid-cols-[1.1fr_0.9fr]">
+          <CreateInvestigationForm />
 
-            <h2 className="text-3xl font-black mb-4">
-              Create Case
-            </h2>
+          <div className="space-y-8">
+            <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-slate-900 to-slate-950 p-8">
+              <p className="uppercase tracking-[0.3em] text-cyan-400 text-xs mb-4">
+                Clue Engine
+              </p>
 
-            <p className="text-slate-400 leading-relaxed mb-8">
-              Build new immersive healthcare investigations and pathway exploration experiences.
-            </p>
+              <h2 className="text-3xl font-black mb-4">
+                Manage Evidence
+              </h2>
 
-            <Link
-              href="/dashboard/authoring/cases"
-              className="inline-flex rounded-2xl bg-cyan-400 px-6 py-4 font-bold text-slate-950 hover:scale-[1.02] transition-all duration-300"
-            >
-              Open Authoring
-            </Link>
-          </div>
+              <p className="text-slate-400 leading-relaxed mb-8">
+                Add, reorder, and organize investigative evidence files and progression logic.
+              </p>
 
-          <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-slate-900 to-slate-950 p-8">
-            <p className="uppercase tracking-[0.3em] text-cyan-400 text-xs mb-4">
-              Clue Engine
-            </p>
+              <button
+                type="button"
+                className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-4 font-bold text-white"
+              >
+                Coming Soon
+              </button>
+            </div>
 
-            <h2 className="text-3xl font-black mb-4">
-              Manage Evidence
-            </h2>
+            <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-slate-900 to-slate-950 p-8">
+              <p className="uppercase tracking-[0.3em] text-cyan-400 text-xs mb-4">
+                Publishing
+              </p>
 
-            <p className="text-slate-400 leading-relaxed mb-8">
-              Add, reorder, and organize investigative evidence files and progression logic.
-            </p>
+              <h2 className="text-3xl font-black mb-4">
+                Publish Cases
+              </h2>
 
-            <button
-              type="button"
-              className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-4 font-bold text-white"
-            >
-              Coming Soon
-            </button>
-          </div>
+              <p className="text-slate-400 leading-relaxed mb-8">
+                New investigations now default to draft status. Publishing controls are available through the investigation workflow layer so faculty can move content from draft to learner-visible when ready.
+              </p>
 
-          <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-slate-900 to-slate-950 p-8">
-            <p className="uppercase tracking-[0.3em] text-cyan-400 text-xs mb-4">
-              Publishing
-            </p>
+              <Link
+                href="/cases"
+                className="inline-flex rounded-2xl bg-cyan-400 px-6 py-4 font-bold text-slate-950 hover:scale-[1.02] transition-all duration-300"
+              >
+                View Learner Library
+              </Link>
+            </div>
 
-            <h2 className="text-3xl font-black mb-4">
-              Publish Cases
-            </h2>
+            <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-slate-900 to-slate-950 p-8">
+              <p className="uppercase tracking-[0.3em] text-cyan-400 text-xs mb-4">
+                Runtime Architecture
+              </p>
 
-            <p className="text-slate-400 leading-relaxed mb-8">
-              Control investigation visibility, publishing state, and learner access.
-            </p>
+              <h2 className="text-3xl font-black mb-4">
+                Investigation Systems
+              </h2>
 
-            <button
-              type="button"
-              className="rounded-2xl border border-white/10 bg-white/[0.03] px-6 py-4 font-bold text-white"
-            >
-              Coming Soon
-            </button>
+              <p className="text-slate-400 leading-relaxed mb-8">
+                Configure adaptive investigations, runtime telemetry, reflections, progression systems, and educational simulation logic.
+              </p>
+
+              <Link
+                href="/dashboard/analytics"
+                className="inline-flex rounded-2xl bg-cyan-400 px-6 py-4 font-bold text-slate-950 hover:scale-[1.02] transition-all duration-300"
+              >
+                View Analytics
+              </Link>
+            </div>
           </div>
         </div>
       </div>
