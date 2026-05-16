@@ -1,9 +1,37 @@
 export type WorkflowStatus = 'draft' | 'published' | 'archived';
 
-export function isPublished(status: WorkflowStatus) {
-  return status === 'published';
+export const workflowStatuses: WorkflowStatus[] = [
+  'draft',
+  'published',
+  'archived',
+];
+
+export function normalizeWorkflowStatus(
+  status?: string | null,
+): WorkflowStatus {
+  if (
+    status === 'draft' ||
+    status === 'published' ||
+    status === 'archived'
+  ) {
+    return status;
+  }
+
+  return 'draft';
 }
 
-export function isArchived(status: WorkflowStatus) {
-  return status === 'archived';
+export function isPublished(status?: string | null) {
+  return normalizeWorkflowStatus(status) === 'published';
+}
+
+export function isArchived(status?: string | null) {
+  return normalizeWorkflowStatus(status) === 'archived';
+}
+
+export function isLearnerVisible(status?: string | null) {
+  return isPublished(status);
+}
+
+export function isFacultyVisible(status?: string | null) {
+  return !isArchived(status);
 }

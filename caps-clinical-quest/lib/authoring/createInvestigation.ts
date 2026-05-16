@@ -14,6 +14,7 @@ export async function createInvestigation(
     .from('cases')
     .insert({
       ...input,
+      publication_status: 'draft',
       published: false,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
