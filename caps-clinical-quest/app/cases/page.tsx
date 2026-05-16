@@ -2,33 +2,19 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { supabase } from '@/lib/supabase/client'
-
-type Case = {
-  id: number
-  title: string
-  track: string
-  difficulty: string
-  scenario: string
-}
+import StatusIndicator from '@/components/publishing/StatusIndicator'
+import {
+  getPublishedCases,
+  type PublishedCase,
+} from '@/lib/cases/getPublishedCases'
 
 export default function CasesPage() {
-  const [cases, setCases] = useState<Case[]>([])
+  const [cases, setCases] = useState<PublishedCase[]>([])
 
   useEffect(() => {
     async function fetchCases() {
-      const { data, error } = await supabase
-        .from('cases')
-        .select('*')
-        .order('id')
-
-      if (data) {
-        setCases(data)
-      }
-
-      if (error) {
-        console.log(error)
-      }
+      const data = await getPublishedCases()
+      setCases(data)
     }
 
     fetchCases()
@@ -64,11 +50,11 @@ export default function CasesPage() {
 
               <div className="mt-8 flex flex-wrap gap-4">
                 <div className="px-5 py-3 rounded-2xl bg-cyan-400/10 border border-cyan-400/20 text-cyan-300">
-                  Investigation Library
+                  Published Investigation Library
                 </div>
 
                 <div className="px-5 py-3 rounded-2xl bg-white/5 border border-white/10 text-slate-300">
-                  {cases.length} Active Cases
+                  {cases.length} Available Cases
                 </div>
               </div>
             </div>
@@ -106,12 +92,19 @@ export default function CasesPage() {
                   <div className="flex items-center gap-3 flex-wrap mb-6">
 
                     <span className="px-4 py-2 rounded-full bg-cyan-400/10 border border-cyan-400/20 text-cyan-300 text-xs uppercase tracking-[0.25em]">
-                      {item.track}
+                      {item.track || 'Clinical Pathway'}
                     </span>
 
                     <span className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-slate-300 text-xs">
-                      {item.difficulty}
+                      {item.difficulty || 'Exploration'}
                     </span>
+
+                    <StatusIndicator
+                      status={
+                        item.publication_status ||
+                        (item.published ? 'published' : 'draft')
+                      }
+                    />
                   </div>
 
                   {/* Title */}
@@ -121,7 +114,7 @@ export default function CasesPage() {
 
                   {/* Scenario */}
                   <p className="text-slate-300 text-lg leading-relaxed flex-grow">
-                    {item.scenario}
+                    {item.description || item.scenario || 'Begin the investigation to review available evidence.'}
                   </p>
 
                   {/* CTA */}
@@ -144,11 +137,11 @@ export default function CasesPage() {
           {cases.length === 0 && (
             <div className="mt-20 text-center border border-dashed border-white/10 rounded-[2rem] p-16 bg-white/[0.02]">
               <h3 className="text-3xl font-black mb-4">
-                No Cases Found
+                No Published Cases Found
               </h3>
 
               <p className="text-slate-400 text-lg">
-                Your investigation database is currently empty.
+                Your learner-facing investigation library does not have any published cases yet.
               </p>
             </div>
           )}
