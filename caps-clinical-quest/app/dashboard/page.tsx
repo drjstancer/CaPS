@@ -30,8 +30,7 @@ function assertDashboardData(): void {
 }
 
 export default function ClinicalQuestDashboard() {
-  const pathname = usePathname();
-  const [searchTerm, setSearchTerm] = useState<string>('');
+    const [searchTerm, setSearchTerm] = useState<string>('');
   const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
   const [savedCases, setSavedCases] = useState<CaseSummary[]>(cases);
   const [newCaseTitle, setNewCaseTitle] = useState<string>('');
