@@ -28,6 +28,7 @@ import {
   navItems,
 } from '@/lib/dashboard-data';
 import Sidebar from '@/components/dashboard/Sidebar';
+import CaseCard from '@/components/dashboard/CaseCard';
 
 function assertDashboardData(): void {
   console.assert(stats.length === 4, 'Expected four dashboard stat cards.');
@@ -194,70 +195,14 @@ export default function ClinicalQuestDashboard() {
               </div>
 
               <div className="space-y-5">
-                {filteredCases.map((item) => (
-                  <div
-                    key={item.id}
-                    className="border border-white/10 rounded-3xl p-6 bg-white/[0.03] hover:border-cyan-400/30 transition-all duration-300"
-                  >
-                    <div className="flex items-start justify-between gap-4 flex-wrap mb-4">
-                      <div>
-                        <h4 className="text-2xl font-black mb-3">{item.title}</h4>
-
-                        <div className="flex flex-wrap gap-3 mb-4">
-                          <span className="px-4 py-2 rounded-full bg-cyan-400/10 border border-cyan-400/20 text-cyan-300 text-xs uppercase tracking-[0.25em]">
-                            {item.track}
-                          </span>
-                          <span className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-slate-300 text-xs">
-                            {item.difficulty}
-                          </span>
-                          <span
-                            className={`px-4 py-2 rounded-full text-xs font-bold ${
-                              item.published
-                                ? 'bg-emerald-400/10 border border-emerald-400/20 text-emerald-300'
-                                : 'bg-amber-400/10 border border-amber-400/20 text-amber-300'
-                            }`}
-                          >
-                            {item.published ? 'Published' : 'Draft'}
-                          </span>
-                        </div>
-
-                        <p className="text-xs text-slate-500">Updated {item.lastUpdated}</p>
-                      </div>
-
-                      <div className="text-right">
-                        <p className="text-slate-400 text-sm mb-1">Student Attempts</p>
-                        <p className="text-3xl font-black text-cyan-300">{item.attempts}</p>
-                      </div>
-                    </div>
-
-                   <div className="flex flex-wrap gap-4 mt-6">
-  <Link
-    href={`/dashboard/cases/${item.id}`}
-    className="px-5 py-3 rounded-2xl bg-cyan-400 text-slate-950 font-bold hover:scale-105 transition-all duration-300 inline-flex items-center"
-  >
-    <Pencil className="mr-2" size={16} />
-    Edit Case
-  </Link>
-
-  <Link
-    href={`/dashboard/analytics/${item.id}`}
-    className="px-5 py-3 rounded-2xl border border-white/10 hover:border-white/20 bg-white/[0.03] transition-all duration-300 inline-flex items-center"
-  >
-    <TrendingUp className="mr-2" size={16} />
-    View Analytics
-  </Link>
-
-  <button
-    type="button"
-    className="px-5 py-3 rounded-2xl border border-red-500/20 hover:border-red-500/40 bg-red-500/10 text-red-300 transition-all duration-300"
-  >
-    <Trash2 className="inline mr-2" size={16} />
-    Delete
-  </button>
+  {filteredCases.map((item) => (
+    <CaseCard
+      key={item.id}
+      item={item}
+      onDelete={handleDeleteCase}
+    />
+  ))}
 </div>
-                  </div>
-                ))}
-              </div>
             </div>
 
             <div className="space-y-8">
