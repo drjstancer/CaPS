@@ -63,6 +63,7 @@ export default function CaseEditorPage({ params }: PageProps) {
   </button>
 </div>
       </form>
+      </div>
     </main>
   );
 }
