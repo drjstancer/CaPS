@@ -27,7 +27,7 @@ import {
   cases,
   navItems,
 } from '@/lib/dashboard-data';
-import Sidebar from '@/components/dashboard/Sidebar';
+
 import CaseCard from '@/components/dashboard/CaseCard';
 
 function assertDashboardData(): void {
@@ -41,7 +41,6 @@ function assertDashboardData(): void {
 
 export default function ClinicalQuestDashboard() {
   const pathname = usePathname();
-  const [userEmail, setUserEmail] = useState<string>('faculty@missouri.edu');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
   const [savedCases, setSavedCases] = useState<CaseSummary[]>(cases);
@@ -53,11 +52,6 @@ export default function ClinicalQuestDashboard() {
 
   useEffect(() => {
     assertDashboardData();
-
-    const storedEmail = window.localStorage.getItem('clinicalQuestUserEmail');
-    if (storedEmail) {
-      setUserEmail(storedEmail);
-    }
   }, []);
 
   function handleDeleteCase(id: number): void {
@@ -99,14 +93,7 @@ export default function ClinicalQuestDashboard() {
     );
 
    return (
-    <main className="min-h-screen bg-[#020617] text-white overflow-hidden relative">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(34,211,238,0.12),transparent_25%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(59,130,246,0.10),transparent_25%)]" />
-
-      <div className="relative z-10 flex">
-        <Sidebar userEmail={userEmail} />
-
-        <section className="flex-1 px-6 py-8 md:px-10 lg:px-14">
+   <div>
           <div className="lg:hidden flex items-center justify-between mb-6 rounded-3xl border border-white/10 bg-slate-950/70 backdrop-blur-xl p-5">
             <div>
               <p className="uppercase tracking-[0.3em] text-cyan-400 text-xs mb-1">
@@ -365,9 +352,7 @@ export default function ClinicalQuestDashboard() {
               </div>
             </div>
           </div>
-        </section>
-      </div>
-
+        
       {showCreateModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-6">
           <div className="w-full max-w-2xl rounded-[2rem] border border-cyan-400/20 bg-slate-950 p-8 shadow-2xl shadow-cyan-500/20">
