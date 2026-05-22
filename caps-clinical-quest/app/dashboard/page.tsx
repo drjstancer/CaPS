@@ -93,7 +93,6 @@ export default function ClinicalQuestDashboard() {
     );
 
    return (
-   <div>
           <div className="lg:hidden flex items-center justify-between mb-6 rounded-3xl border border-white/10 bg-slate-950/70 backdrop-blur-xl p-5">
             <div>
               <p className="uppercase tracking-[0.3em] text-cyan-400 text-xs mb-1">
