@@ -2,10 +2,14 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-
+import UserAccessCard from './UserAccessCard';
 import { navItems } from '@/lib/dashboard-data';
 
-export default function Sidebar() {
+type SidebarProps = {
+  userEmail: string;
+};
+
+export default function Sidebar({ userEmail }: SidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -42,6 +46,7 @@ export default function Sidebar() {
           );
         })}
       </nav>
+      <UserAccessCard userEmail={userEmail} />
     </aside>
   );
 }
