@@ -62,7 +62,6 @@ export default function CaseEditorPage({ params }: PageProps) {
     Cancel
   </button>
 </div>
-        </div>
       </form>
     </main>
   );
