@@ -379,7 +379,7 @@ export default function ClinicalQuestDashboard() {
 
                    <div className="flex flex-wrap gap-4 mt-6">
   <Link
-    href={`/dashboard/cases/1`}
+    href={`/dashboard/cases/${item.id}`}
     className="px-5 py-3 rounded-2xl bg-cyan-400 text-slate-950 font-bold hover:scale-105 transition-all duration-300 inline-flex items-center"
   >
     <Pencil className="mr-2" size={16} />
