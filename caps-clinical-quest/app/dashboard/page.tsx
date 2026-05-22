@@ -28,6 +28,7 @@ import {
   cases,
   navItems,
 } from '@/lib/dashboard-data';
+import Sidebar from '@/components/dashboard/Sidebar';
 
 function assertDashboardData(): void {
   console.assert(stats.length === 4, 'Expected four dashboard stat cards.');
@@ -108,59 +109,7 @@ export default function ClinicalQuestDashboard() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(59,130,246,0.10),transparent_25%)]" />
 
       <div className="relative z-10 flex">
-        <aside className="hidden lg:flex w-72 min-h-screen border-r border-white/10 bg-slate-950/70 backdrop-blur-xl flex-col p-8">
-          <div className="mb-12">
-            <p className="uppercase tracking-[0.35em] text-cyan-400 text-xs mb-3">
-              Mizzou MedPrep
-            </p>
-            <h1 className="text-3xl font-black leading-tight">Clinical Quest</h1>
-          </div>
-
-          <nav className="space-y-3 flex-1">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = pathname === item.href;
-
-              return (
-                <Link
-                  href={item.href}
-                  key={item.name}
-                  className={`w-full flex items-center gap-4 text-left px-5 py-4 rounded-2xl transition-all duration-300 ${
-                    isActive
-                      ? 'bg-cyan-400 text-slate-950 font-bold shadow-lg shadow-cyan-500/20'
-                      : 'bg-white/[0.03] hover:bg-white/[0.08] text-slate-300'
-                  }`}
-                >
-                  <Icon size={20} />
-                  {item.name}
-                </Link>
-              );
-            })}
-          </nav>
-
-          <div className="mt-10 border border-white/10 rounded-3xl p-5 bg-white/[0.03]">
-            <div className="mb-5 pb-5 border-b border-white/10">
-              <p className="text-slate-500 text-xs uppercase tracking-[0.25em] mb-2">
-                Logged In
-              </p>
-              <p className="text-sm text-cyan-300 break-all">{userEmail}</p>
-            </div>
-            <p className="text-slate-400 text-sm mb-2">Faculty Access</p>
-            <h3 className="font-bold text-lg mb-2">Administrative Console</h3>
-            <p className="text-slate-400 text-sm leading-relaxed">
-              Build cases, monitor engagement, and track healthcare career exploration outcomes.
-            </p>
-          </div>
-
-          <button
-            type="button"
-            onClick={handleSignOut}
-            className="mt-6 flex items-center justify-center gap-3 px-5 py-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-300 hover:bg-red-500 hover:text-white transition-all duration-300"
-          >
-            <LogOut size={18} />
-            Sign Out
-          </button>
-        </aside>
+        <Sidebar />
 
         <section className="flex-1 px-6 py-8 md:px-10 lg:px-14">
           <div className="lg:hidden flex items-center justify-between mb-6 rounded-3xl border border-white/10 bg-slate-950/70 backdrop-blur-xl p-5">
