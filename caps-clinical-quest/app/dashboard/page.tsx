@@ -377,33 +377,31 @@ export default function ClinicalQuestDashboard() {
                       </div>
                     </div>
 
-                    <div className="flex gap-4 flex-wrap mt-6">
-                      <button
-                        type="button"
-                        onClick={() => setEditingCase(editingCase === item.id ? null : item.id)}
-                        className="px-5 py-3 rounded-2xl bg-cyan-400 text-slate-950 font-bold hover:scale-105 transition-all duration-300"
-                      >
-                        <Pencil className="inline mr-2" size={16} />
-                        {editingCase === item.id ? 'Editing...' : 'Edit Case'}
-                      </button>
+                   <div className="flex flex-wrap gap-4 mt-6">
+  <Link
+    href={`/dashboard/cases/${item.id}`}
+    className="px-5 py-3 rounded-2xl bg-cyan-400 text-slate-950 font-bold hover:scale-105 transition-all duration-300 inline-flex items-center"
+  >
+    <Pencil className="mr-2" size={16} />
+    Edit Case
+  </Link>
 
-                      <button
-                        type="button"
-                        className="px-5 py-3 rounded-2xl border border-white/10 hover:border-white/20 bg-white/[0.03] transition-all duration-300"
-                      >
-                        <TrendingUp className="inline mr-2" size={16} />
-                        View Analytics
-                      </button>
+  <Link
+    href={`/dashboard/analytics/${item.id}`}
+    className="px-5 py-3 rounded-2xl border border-white/10 hover:border-white/20 bg-white/[0.03] transition-all duration-300 inline-flex items-center"
+  >
+    <TrendingUp className="mr-2" size={16} />
+    View Analytics
+  </Link>
 
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteCase(item.id)}
-                        className="px-5 py-3 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-300 hover:bg-red-500 hover:text-white transition-all duration-300"
-                      >
-                        <Trash2 className="inline mr-2" size={16} />
-                        Delete
-                      </button>
-                    </div>
+  <button
+    type="button"
+    className="px-5 py-3 rounded-2xl border border-red-500/20 hover:border-red-500/40 bg-red-500/10 text-red-300 transition-all duration-300"
+  >
+    <Trash2 className="inline mr-2" size={16} />
+    Delete
+  </button>
+</div>
                   </div>
                 ))}
               </div>
