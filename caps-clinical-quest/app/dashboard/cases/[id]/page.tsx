@@ -16,7 +16,14 @@ export default function CaseEditorPage({ params }: PageProps) {
           Edit Case #{params.id}
         </h1>
 
-        <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-8 space-y-6">
+        <form
+  onSubmit={(e) => {
+    e.preventDefault();
+
+    alert('Save functionality coming next.');
+  }}
+  className="rounded-3xl border border-white/10 bg-white/[0.03] p-8 space-y-6"
+>
           <div>
             <label className="block mb-2 font-semibold">
               Case Title
@@ -40,16 +47,23 @@ export default function CaseEditorPage({ params }: PageProps) {
           </div>
 
           <div className="flex gap-4">
-            <button className="px-6 py-4 rounded-2xl bg-cyan-400 text-slate-950 font-black">
-              Save Changes
-            </button>
+  <button
+    type="submit"
+    className="px-6 py-4 rounded-2xl bg-cyan-400 text-slate-950 font-black hover:scale-105 transition-all duration-300"
+  >
+    Save Changes
+  </button>
 
-            <button className="px-6 py-4 rounded-2xl border border-white/10">
-              Cancel
-            </button>
-          </div>
+  <button
+    type="button"
+    onClick={() => window.history.back()}
+    className="px-6 py-4 rounded-2xl border border-white/10 hover:border-white/20 transition-all duration-300"
+  >
+    Cancel
+  </button>
+</div>
         </div>
-      </div>
+      </form>
     </main>
   );
 }
