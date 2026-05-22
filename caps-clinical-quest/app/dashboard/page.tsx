@@ -1,21 +1,11 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+
 import {
-  LayoutDashboard,
-  FileText,
-  Users,
-  BarChart3,
-  Shield,
-  Stethoscope,
   Plus,
   X,
-  Trash2,
-  Pencil,
-  TrendingUp,
-} from 'lucide-react';
+ } from 'lucide-react';
 
 import { CaseSummary } from '@/types/dashboard';
 
@@ -93,6 +83,7 @@ export default function ClinicalQuestDashboard() {
     );
 
    return (
+  <>
           <div className="lg:hidden flex items-center justify-between mb-6 rounded-3xl border border-white/10 bg-slate-950/70 backdrop-blur-xl p-5">
             <div>
               <p className="uppercase tracking-[0.3em] text-cyan-400 text-xs mb-1">
@@ -427,6 +418,6 @@ export default function ClinicalQuestDashboard() {
           </div>
         </div>
       )}
-    </main>
+    </>
   );
 }
