@@ -1,21 +1,36 @@
-# CaPS Clinical Quest
+# PathQuest
 
-Interactive healthcare identity-building platform for Medical Explorations and future CaPS pathway programming at the University of Missouri School of Medicine.
+Interactive healthcare pathway exploration and identity-development platform for Medical Explorations and future CaPS pathway programming at the University of Missouri School of Medicine.
 
 ## Vision
 
-CaPS Clinical Quest is designed to move beyond passive healthcare career presentations by creating immersive, case-based learning experiences where students investigate medical scenarios, collaborate in teams, and explore healthcare professions through interactive storytelling.
+PathQuest is designed to move beyond passive healthcare career presentations by creating immersive, collaborative, case-based learning experiences where students investigate pathway scenarios, work in teams, and explore healthcare professions through interactive storytelling.
 
 ## Core Features
 
-- Interactive medical mystery cases
-- Healthcare profession exploration
+- Interactive pathway exploration experiences
+- Healthcare profession discovery
 - Student identity formation framework
-- Team-based learning experiences
+- Team-based collaborative learning
 - Reflection and assessment tools
-- Presenter and facilitator dashboards
+- Facilitator and presenter dashboards
 - Future live Zoom integration
 - Research and analytics infrastructure
+
+## Educational Philosophy
+
+PathQuest is not designed to simulate real-world healthcare systems or clinical infrastructure.
+
+The platform instead focuses on:
+
+- healthcare identity development
+- collaborative inquiry learning
+- pathway exploration
+- career awareness
+- professional belonging
+- student engagement and reflection
+
+The project is grounded in anti-deficit educational frameworks and student development theory.
 
 ## Tech Stack
 
@@ -33,24 +48,26 @@ CaPS Clinical Quest is designed to move beyond passive healthcare career present
 - Authentication scaffold
 - Role architecture
 - Initial UI prototype
+- Database schema and RLS policies
 
-### Phase 2 — Case Engine
-- Dynamic case creation
-- Clue sequencing
-- Reflection system
-- Profession reveal system
+### Phase 2 — Experience Engine
+- Dynamic learning experience creation
+- Segment sequencing
+- Reflection workflows
+- Career insight reveal system
 
 ### Phase 3 — Engagement Layer
-- Live multiplayer gameplay
+- Live multiplayer collaboration
 - Polling system
-- Leaderboards
 - Team competitions
+- Facilitator controls
 
 ### Phase 4 — Institutional & Research Layer
 - Analytics dashboards
 - Assessment exports
 - Longitudinal participation tracking
 - Research integration
+- Publication-ready data structures
 
 ## User Roles
 
@@ -59,34 +76,51 @@ CaPS Clinical Quest is designed to move beyond passive healthcare career present
 - Facilitator
 - Administrator
 
+## Foundational Database Architecture
+
+### Core Tables
+
+| Table | Purpose |
+|---|---|
+| `participant_profiles` | Learner identity and profile data |
+| `user_roles` | Role-based access management |
+| `learning_activities` | Reusable educational experiences |
+| `activity_segments` | Sequenced activity components |
+| `participant_groups` | Team structures |
+| `group_memberships` | Team membership relationships |
+| `session_runs` | Live session instances |
+| `participant_responses` | Reflections and learner submissions |
+| `career_connections` | Profession exploration content |
+| `engagement_metrics` | Educational analytics and research data |
+
 ## Educational Activity Schema
 
-To ensure this platform remains clearly educational and avoids resembling real-world clinical systems, cybersecurity tooling, or production healthcare infrastructure, CaPS Clinical Quest uses intentionally neutral and education-focused naming conventions.
+To ensure this platform remains clearly educational and avoids resembling real-world clinical systems, cybersecurity tooling, or production healthcare infrastructure, PathQuest uses intentionally neutral and education-focused naming conventions.
 
 ### Naming Philosophy
 
 The platform avoids:
 
-- Production-style healthcare identifiers
-- Real-world EHR terminology
-- Security or exploit-oriented naming
-- Sensitive or regulated terminology where unnecessary
-- Vendor-like healthcare system naming patterns
+- production-style healthcare identifiers
+- real-world EHR terminology
+- security or exploit-oriented naming
+- sensitive or regulated terminology where unnecessary
+- vendor-like healthcare system naming patterns
 
 The platform instead uses:
 
 - learner-centered terminology
 - educational workflow language
 - activity/session-based naming
-- simulation-oriented descriptors
+- collaborative learning descriptors
 
 ## Sample Activity Payload
 
 ```json
 {
-  "activity_id": "cq-2026-001",
+  "activity_id": "pq-2026-001",
   "session_title": "The Mystery of the Mountain Hiker",
-  "experience_type": "team_case_exploration",
+  "experience_type": "team_pathway_exploration",
   "difficulty_level": "intermediate",
   "participant_group": {
     "group_id": "team-orion",
@@ -124,7 +158,7 @@ The platform instead uses:
   },
   "facilitator_notes": {
     "session_status": "active",
-    "recommended_followup": "Discuss diagnostic reasoning strategies"
+    "recommended_followup": "Discuss collaborative reasoning strategies"
   }
 }
 ```
@@ -134,10 +168,10 @@ The platform instead uses:
 | Field | Purpose |
 |---|---|
 | `activity_id` | Unique identifier for a learning activity |
-| `session_title` | Educational case or activity title |
+| `session_title` | Educational experience title |
 | `experience_type` | Activity classification |
 | `participant_group` | Team or cohort information |
-| `learning_sequence` | Tracks clue progression and activity flow |
+| `learning_sequence` | Tracks activity progression and flow |
 | `reflection_prompts` | Structured student reflection prompts |
 | `career_connections` | Healthcare profession exploration links |
 | `session_metrics` | Educational engagement indicators |
@@ -188,6 +222,8 @@ The following categories of names should be avoided in schemas, APIs, database t
 | clinical_notes | facilitator_notes |
 | intervention | learning_action |
 | dashboard_alert | session_update |
+| clinical_case | learning_experience |
+| diagnosis_reveal | career_insight |
 
 ## Repository Structure
 
@@ -206,3 +242,10 @@ caps-clinical-quest/
 ## Current Status
 
 Institutional prototype scaffold initialized.
+
+Current focus:
+- foundational database architecture
+- authentication and role management
+- educational activity engine
+- facilitator workflows
+- research-informed analytics design
