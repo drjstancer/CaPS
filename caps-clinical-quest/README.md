@@ -41,6 +41,43 @@ The project is grounded in anti-deficit educational frameworks and student devel
 - Vercel
 - GitHub
 
+# Current Development Batch
+
+## Batch 1 — Foundation & Authentication
+
+### Primary Objectives
+
+- Establish secure authentication
+- Build role-aware architecture
+- Scaffold protected application routes
+- Configure database foundation
+- Create reusable application structure
+
+### Batch 1 Deliverables
+
+| Deliverable | Status |
+|---|---|
+| Supabase project | Complete |
+| Foundation schema | Complete |
+| Educational-safe schema language | Complete |
+| Role architecture planning | Complete |
+| Authentication setup | In Progress |
+| Protected routing | Pending |
+| Dashboard scaffolding | Pending |
+| Session-aware layouts | Pending |
+
+### Batch 1 Success Criteria
+
+A user should be able to:
+
+1. Create an account
+2. Log in securely
+3. Receive a role assignment
+4. Access protected routes
+5. Reach a role-aware dashboard
+
+No advanced gameplay, multiplayer, analytics dashboards, AI systems, or gamification layers should be implemented before Batch 1 is complete.
+
 ## Planned Development Phases
 
 ### Phase 1 — Foundation
@@ -71,10 +108,12 @@ The project is grounded in anti-deficit educational frameworks and student devel
 
 ## User Roles
 
-- Student
-- Presenter
-- Facilitator
-- Administrator
+| Role | Primary Function |
+|---|---|
+| Student | Participate in pathway experiences |
+| Presenter | Guide large-group experiences |
+| Facilitator | Manage live sessions and teams |
+| Administrator | System and content management |
 
 ## Foundational Database Architecture
 
@@ -92,6 +131,22 @@ The project is grounded in anti-deficit educational frameworks and student devel
 | `participant_responses` | Reflections and learner submissions |
 | `career_connections` | Profession exploration content |
 | `engagement_metrics` | Educational analytics and research data |
+
+## Recommended Initial Route Structure
+
+```plaintext
+app/
+│
+├── login/
+├── dashboard/
+├── activity/
+│   └── [slug]/
+├── session/
+│   └── [id]/
+├── facilitator/
+│   └── [id]/
+└── admin/
+```
 
 ## Educational Activity Schema
 
@@ -163,20 +218,6 @@ The platform instead uses:
 }
 ```
 
-## Schema Field Reference
-
-| Field | Purpose |
-|---|---|
-| `activity_id` | Unique identifier for a learning activity |
-| `session_title` | Educational experience title |
-| `experience_type` | Activity classification |
-| `participant_group` | Team or cohort information |
-| `learning_sequence` | Tracks activity progression and flow |
-| `reflection_prompts` | Structured student reflection prompts |
-| `career_connections` | Healthcare profession exploration links |
-| `session_metrics` | Educational engagement indicators |
-| `facilitator_notes` | Presenter/facilitator guidance data |
-
 ## Reserved Naming Restrictions
 
 The following categories of names should be avoided in schemas, APIs, database tables, and payloads:
@@ -241,11 +282,11 @@ caps-clinical-quest/
 
 ## Current Status
 
-Institutional prototype scaffold initialized.
+Foundation schema deployed to Supabase.
 
-Current focus:
-- foundational database architecture
-- authentication and role management
-- educational activity engine
-- facilitator workflows
-- research-informed analytics design
+Current engineering focus:
+- authentication setup
+- protected routing
+- role-aware dashboard architecture
+- educational activity engine scaffolding
+- facilitator workflow planning
